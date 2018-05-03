@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.img.images.mapper.FavoriteMapper">
+<resultMap id="BaseResultMap" type="com.img.images.model.Favorite">
+    <id column="id" property="id"/>
+    <result column="create_date" property="createDate"/>
+    <result column="update_date" property="updateDate"/>
+    <result column="name" property="name"/>
+    <result column="description" property="description"/>
+    <result column="url" property="url"/>
+    <result column="user_id" property="userId"/>
+</resultMap>
+
+    <insert id="save" parameterType="com.img.images.model.Favorite" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        favorite
+        (
+        `create_date`,
+        `name`,
+        `description`,
+        `url`,
+        `user_id`
+        )
+        VALUES
+        (
+        now(),
+        #{name},
+        #{description},
+        #{url},
+        #{userId}
+        )
+    </insert>
+    <update id="update" parameterType="com.img.images.model.Favorite">
+        update
+        favorite
+        <set>
+          <if test="name != null">`name`=#{name},</if>
+            <if test="description != null">`description`=#{description},</if>
+            <if test="url != null">`url`=#{url},</if>
+            <if test="userId != null">`user_id`=#{userId}</if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="getByName" resultMap="BaseResultMap">
+        select
+        *
+        FROM
+        favorite
+        where `name`=#{name}
+    </select>
+    
+    <select id="findByUserId" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        favorite
+        where user_id=#{id}
+    </select>
+
+    <select id="get" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        favorite
+        where id=#{id}
+    </select>
+
+    <select id="search" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        favorite
+        where 1=1
+        <if test="userId != null">and user_id=#{userId}</if>
+        order by create_date DESC
+        limit #{offset},#{size}
+    </select>
+    
+    <select id="countFavByUserId" resultType="int">
+        select
+        count(imf.id)
+        FROM
+        image_favorite imf
+        left join favorite f
+        on imf.favorite_id=f.id
+        where f.user_id=#{id}
+    </select>
+</mapper>

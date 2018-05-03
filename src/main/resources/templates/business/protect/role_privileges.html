@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <script src="/vendor/sweetalert.min.js"></script>
+    <title>权限分配</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <style>
+        .form-list {
+            overFlow-x: hidden;
+            overFlow-y: scroll;
+            height: 400px;
+            border: 2px solid #f5f5f5;
+            border-radius: 4px;
+            background: #fff;
+            box-shadow: 0 1px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 1px 0 rgba(0, 0, 0, .12);
+        }
+
+        .checkbox label {
+            display: inline;
+        }
+
+        .checkbox-label {
+            padding-left: 15px;
+            display: inline-block;
+        }
+
+        .checkbox-label .checkbox-text {
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            cursor: pointer;
+        }
+
+        .checkbox-label .checkbox-span {
+            cursor: zoom-out;
+        }
+
+        .form-group .help-block {
+            display: none;
+        }
+
+        .form-group .help-block-show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div class="container-fluid" id="app">
+    <div class="row" style="margin: 10px auto 0px auto;">
+        <div class="col-md-12" style="padding: 0px 0px;">
+            <h3>权限分配</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-list">
+                <div style="padding:3px;position:absolute;right:31px;top:0px;cursor: pointer;z-index:2;">
+                    <a role="button" class="btn btn-sm" title="保存分配权限" v-on:click="saveRPrivileges">
+                        <span class="glyphicon glyphicon-floppy-save"></span>
+                    </a>
+                </div>
+                <form class="form-horizontal">
+                    <div class="checkbox" v-for="p in privileges" v-bind:class="'level_'+p.level">
+                        <div class="checkbox-label">
+                            <span v-bind:style="getMarginStyle(p)"></span>
+                            <input v-if="p.level !== 1" type="checkbox" v-bind:value="p.id" v-model="rPrivileges"
+                                   v-on:click="isChecked(p,$event)"/>
+                            <span v-on:click="levelClick" v-bind:class="getClass(p)"></span>
+                            <span v-html="p.name" class="checkbox-text" v-on:click="getPrivilege(p,$event)"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div>
+                <h4>权限信息</h4>
+            </div>
+            <form novalidate="true" v-on:submit.prevent="doPrivilege">
+                <div class="form-group" v-bind:class="validationClass('name')">
+                    <label for="name" class="control-label">名字</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入名字" v-model="privilege.name"/>
+                    <span class="help-block" v-if="!$v.privilege.name.required"
+                          v-bind:class="{'help-block-show':afterValidation}">起一个能表示意义的名字</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('resource')">
+                    <label for="resource" class="control-label">资源</label>
+                    <input type="text" class="form-control" id="resource" placeholder="请输入资源"
+                           v-model="privilege.resource"/>
+                    <span class="help-block" v-if="!$v.privilege.resource.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请输入资源</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('action')">
+                    <label for="action" class="control-label">动作</label>
+                    <input type="text" class="form-control" id="action" placeholder="请输入动作" v-model="privilege.action"/>
+                    <span class="help-block" v-if="!$v.privilege.action.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请输入动作</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('parentId')">
+                    <label>父级</label>
+                    <select class="form-control" v-model.number="privilege.parentId">
+                        <option value="1">图片管理系统</option>
+                        <option v-for="p in privileges" v-if="p.id!=privilege.id &amp; p.level!=1 &amp; p.level!=4"
+                                v-bind:value="p.id"
+                                v-html="p.name"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" data-loading-text="提交中">保存</button>
+                <button v-if="privilege.id" type="button" class="btn btn-default btn-sm" data-loading-text="取消中"
+                        v-on:click="cancel">取消
+                </button>
+                <button v-if="privilege.id" type="button" class="btn btn-danger btn-sm" data-loading-text="删除中"
+                        v-on:click="del">删除
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.privileges = /*[[${privileges}]]*/ null
+    window.rPrivileges = /*[[${rPrivileges}]]*/ null
+    window.roleId = /*[[${roleId}]]*/ null
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    var app = new Vue({
+        el: '#app',
+        mixins: [vuelidate.validationMixin],
+        data: {
+            afterValidation: false,
+            roleId: null,
+            privileges: [],
+            rPrivileges: [],
+            privilege: {
+                id: null,
+                name: null,
+                resource: null,
+                action: null,
+                parentId: 1
+            }
+
+        },
+        validations: {
+            privilege: {
+                name: {
+                    required: validators.required
+                },
+                resource: {
+                    required: validators.required
+                },
+                action: {
+                    required: validators.required
+                },
+                parentId: {
+                    required: validators.required
+                }
+            }
+        },
+        methods: {
+            getClass: function (p) {
+                if (p.level === 1) {
+                    return 'glyphicon glyphicon-list checkbox-span'
+                }
+                for (key in privileges) {
+                    if (privileges[key].parent === p.id) {
+                        return 'glyphicon glyphicon-folder-open checkbox-span'
+                    }
+                }
+                return 'glyphicon glyphicon-tree-deciduous'
+            },
+            getMarginStyle: function (p) {
+                var margin_left = 0
+                return 'margin-left: ' + ((p.level - 1)*20 + margin_left) + 'px'
+            },
+            isChecked: function (p, event) {
+                if (event.srcElement.checked == true) {
+                    this.checked(p)
+                }
+            },
+            checked: function (p) {
+                var parent = p.parent
+                this.rPrivileges.push(parent)
+                for (var i = 0; i < this.privileges.length; i++) {
+                    if (parent === this.privileges[i].id) {
+                        this.checked(this.privileges[i])
+                    }
+                }
+            },
+            saveRPrivileges: function () {
+                var self = this
+                var param = ''
+                for (var i = 0; i < self.rPrivileges.length; i++) {
+                    param += '&rPrivileges=' + self.rPrivileges[i]
+                }
+                $.ajax({
+                    url: '/business/p/roles/' + self.roleId + '/updatePrivileges',
+                    type: 'patch',
+                    data: param.substring(1),
+                    success: function (result) {
+                        swal({
+                            text: result.msg,
+                            button: '确定',
+                            icon: result.icon
+                        })
+                    },
+                    error: function (res) {
+                        //console.log(res)
+                        resErrorMsg(res)
+                    }
+                })
+            },
+            validationClass: function (fieldName) {
+                const field = this.$v.privilege[fieldName]
+                if (field) {
+                    return {
+                        'has-error': field.$invalid && this.afterValidation
+                    }
+                }
+            },
+            del: function () {
+                var self = this
+                $.ajax({
+                    url: '/business/p/privileges/delete/' + self.privilege.id,
+                    type: 'delete',
+                    success: function (result) {
+                        if (result.code === 204) {
+                            swal({
+                                text: '删除成功！',
+                                button: '确定',
+                                icon: 'success'
+                            }).then(function () {
+                                window.location.href = '/business/p/roles/' + self.roleId + '/rolePrivileges'
+                            })
+                        } else {
+                            swal({
+                                text: result.msg,
+                                button: '确定',
+                                icon: 'warning'
+                            })
+                        }
+                    },
+                    error: function (res) {
+                        //after();
+                        //console.log(res)
+                        resErrorMsg(res)
+                    }
+                })
+            },
+            cancel: function () {
+                this.tabText()
+                this.privilege.id = null
+                this.privilege.name = null
+                this.privilege.resource = null
+                this.privilege.action = null
+                this.privilege.parentId = 1
+            },
+            tabText: function () {
+                var text = $('.checkbox-text')
+                for (var i = 0; i < text.length; i++) {
+                    $(text[i]).css('color', '#000')
+                    $(text[i]).css('background', '#fff')
+                }
+            },
+            getPrivilege: function (p, event) {
+                var self = this
+                if (p.level > 1) {
+                    self.tabText()
+                    $(event.srcElement).css('color', '#fff')
+                    $(event.srcElement).css('background', '#000')
+                    $.get('/business/p/privileges/list/' + p.id, function (result) {
+                        if (result.code === 200) {
+                            self.privilege.id = result.privilege.id
+                            self.privilege.name = result.privilege.name
+                            self.privilege.resource = result.privilege.resource
+                            self.privilege.action = result.privilege.action
+                            self.privilege.parentId = result.privilege.parentId
+                        }
+                    })
+                }
+            },
+            levelClick: function (event) {
+                var element = $(event.srcElement).parent().parent()
+                var level = element.attr('class').substring(element.attr('class').indexOf('_') + 1)
+                var id = $(event.srcElement).prev().val()
+                var n = false
+                for (var i = 0; i < this.privileges.length; i++) {
+                    if (this.privileges[i].id == id) {
+                        n = true;
+                        if ($(event.srcElement).css('cursor') == 'zoom-out') {
+                            $(event.srcElement).css('cursor', 'zoom-in')
+                        } else {
+                            $(event.srcElement).css('cursor', 'zoom-out')
+                        }
+                    }
+                    if (n) {
+                        element = element.next()
+                        if (element.attr('class')) {
+                            if (level < element.attr('class').substring(element.attr('class').indexOf('_') + 1)) {
+                                if (element.css('display') == 'none') {
+                                    element.css('display', "")
+                                } else {
+                                    element.css('display', "none")
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            },
+            doPrivilege: function (event) {
+                var self = this
+                this.afterValidation = true
+                if (!this.$v.$invalid) {
+                    if (self.privilege.id) {
+                        self.update()
+                    } else {
+                        self.create(event)
+                    }
+                }
+            },
+            create: function (event) {
+                $(event.srcElement).button('loading')
+                var self = this
+                $.ajax({
+                    method: 'post',
+                    url: '/business/p/privileges/add',
+                    data: $.param(self.privilege),
+                    success: function (result) {
+                        $(event.srcElement).button('reset')
+                        self.afterValidation = false;
+                        if (result.code == 201) {
+                            swal({
+                                text: result.msg,
+                                button: '确认',
+                                icon: 'success'
+                            }).then(function () {
+                                window.location.href = '/business/p/roles/' + self.roleId + '/rolePrivileges';
+                            })
+                        } else {
+                            swal({
+                                text: result.msg,
+                                button: '确认',
+                                icon: result.icon
+                            })
+                        }
+                    },
+                    error: function (res) {
+                        //after();
+                        //console.log(res)
+                        resErrorMsg(res)
+                    }
+                })
+            },
+            update: function () {
+                var self = this
+                $.ajax({
+                    method: 'put',
+                    url: '/business/p/privileges/update/' + self.privilege.id,
+                    data: $.param(self.privilege),
+                    success: function (result) {
+                        self.afterValidation = false;
+                        if (result.code == 204) {
+                            swal({
+                                text: result.msg,
+                                button: '确认',
+                                icon: 'success'
+                            }).then(function () {
+                                window.location.href = '/business/p/roles/' + self.roleId + '/rolePrivileges';
+                            })
+                        } else {
+                            swal({
+                                text: result.msg,
+                                button: '确认',
+                                icon: result.icon
+                            })
+                        }
+                    },
+                    error: function (res) {
+                        //after();
+                        //console.log(res)
+                        resErrorMsg(res)
+                    }
+                })
+            }
+        },
+        mounted: function () {
+            this.privileges = privileges
+            this.rPrivileges = rPrivileges
+            this.roleId = roleId
+        }
+    })
+    
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

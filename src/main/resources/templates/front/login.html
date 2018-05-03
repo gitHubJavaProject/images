@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <head th:replace="_shared/head :: head"></head>
+  <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+  <script src="/vendor/vuelidate/validators.min.js"></script>
+  <title>登录</title>
+  <style>
+    body {
+      margin: 10px;
+      padding: 50px 15px;
+      background-color: rgb(247, 250, 252);
+      background-image: url('/images/login-bg.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .form-register {
+      margin: 77px auto 0 auto;
+      width: 300px;
+    }
+
+    .form-register h1 {
+      width: 160px;
+      margin: 0 auto;
+      padding: 10px 0;
+    }
+
+    .form-register .form-group {
+      margin: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+    }
+
+    .form-register .form-group .form-control {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+    .form-register .form-group .form-control:focus {
+      border-color: #ccc;
+      outline: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+
+    .input-wrapper {
+      position: relative;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    label.error {
+      position: absolute;
+      top: 0;
+      right: 20px;
+      padding: 0 8px;
+      line-height: 32px;
+      color: #c33;
+      cursor: text;
+      font-weight: 400;
+      background: #fff;
+      background: -webkit-linear-gradient(left, #fff0, #fff 8px);
+      background: linear-gradient(to right, #fff0, #fff 8px);
+      -webkit-transform: translate(20px, 0);
+      -ms-transform: translate(20px, 0);
+      transform: translate(20px, 0);
+      -webkit-transition: .25s ease-out;
+      transition: .25s ease-out;
+    }
+
+    .input-wrapper-addon {
+      position: absolute;
+      top: 9px;
+      right: 8px;
+      font-size: 13px;
+    }
+
+    .alert {
+      display: none;
+    }
+
+    .has-error-message .alert {
+      display: block;
+    }
+    .span{
+      display: none;
+    }
+    .has-counter .span{
+      display: block;
+    }
+    .beforeBlock{
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<form novalidate="true" id="register_form" class="form form-register clearfix" v-on:submit.prevent="doRegister"
+      v-bind:class="{'has-error-message': hasError}">
+  <h1><img src="/images/logo.png" width="160px"/></h1>
+  <p class="help-block text-center" style="font-size: 16px;">
+    <span>跨境电商重点企业推介平台</span>
+  </p>
+  <div class="alert alert-danger" role="alert" style="margin: 15px;">
+    请输入
+    <span v-if="!$v.reg.mobile.required">手机号</span>
+    <span v-if="!$v.reg.pwd.required">密码</span>
+  </div>
+  <input id="from" type="hidden" th:value="${from}"/>
+  <div v-if="hasMobile" class="alert alert-danger" role="alert" style="margin: 15px;"
+       v-bind:class="{'beforeBlock': hasMobile}">
+    <span v-if="errorMsg" >{{errorMsg}}</span>
+  </div>
+  <div class="form-group">
+    <div>
+      <div class="input-wrapper">
+        <input id="mobile" name="mobile" type="text" class="form-control" placeholder="手机号"
+               v-model="reg.mobile"/>
+      </div>
+      <div class="input-wrapper">
+        <input id="pwd" name="pwd" type="password" class="form-control" placeholder="密码"
+               v-model="reg.pwd"/>
+      </div>
+    </div>
+  </div>
+  <div class="form-group" style="border: 0">
+    <button type="submit" class="btn btn-primary btn-register btn-block" data-loading-text="登录中">
+      <span>企业登录</span>
+    </button>
+  </div>
+  <p class="text-muted text-center">
+    <small>没有账户？</small>
+    <a href="/ent/register">点此注册</a>
+  </p>
+</form>
+<section th:replace="_shared/foot :: foot"></section>
+<script type="text/javascript">
+  /*<![CDATA[*/
+  var app = new Vue({
+    el: '#register_form',
+    mixins: [vuelidate.validationMixin],
+    data: {
+      errorMsg: false,
+      showCounter: false,
+      afterValidation: false,
+      reg: {
+        mobile: null,
+        pwd: null
+      }
+    },
+    computed: {
+      hasMobile: function () {
+        return !this.afterValidation && this.errorMsg;
+      },
+      hasError: function () {
+        return this.afterValidation && this.$v.$invalid;
+      }
+    },
+    validations: {
+      reg: {
+        mobile: {
+          required: validators.required,
+          numeric: validators.numeric
+        },
+        pwd: {
+          required: validators.required
+        }
+      }
+    },
+    methods: {
+      doRegister: function () {
+        this.$v.$touch();
+        this.afterValidation = true;
+        var fromUri = $('#from').val();
+        if (!this.$v.$invalid) {
+          before();
+          $.ajax({
+            type: "POST",
+            url: "/ent/login",
+            data: $.param(this.reg),
+            dataType: "json",
+            success: function(data){
+              if (data.code == 500) {
+                app.errorMsg = data.msg;
+                app.afterValidation = false;
+                after();
+              }else {
+                if (fromUri.length > 0) {
+                  window.location.href = decodeURI(fromUri);
+                } else {
+                  window.location.href = '/ent/p/apply';
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+  })
+
+  function before (){
+    $('button[type=submit]').button('loading');
+  }
+
+  function after () {
+    $('button[type=submit]').button('reset');
+  }
+  /*]]>*/
+</script>
+</body>
+</html>

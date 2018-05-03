@@ -1,0 +1,63 @@
+<nav th:fragment="header" class="navbar navbar-main navbar-fixed-top">
+    <div class="container-fluid header-container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/front/index">
+                <img src=""/>
+                <span class="glyphicon glyphicon-certificate"></span>
+                <span class="navbar-brand-text">涂图网</span>
+                <span class="navbar-brand-text-second"> | 海量资源 随心下载 </span>
+            </a>
+        </div>
+        <form class="form-inline form-header">
+            <div class="form-group">
+                <label class="sr-only" for="exampleInputAmount">
+                    Amount (in dollars)
+                </label>
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </div>
+                    <input onfocus="searchFocus();" onkeyup="searchFocus()" type="text" class="form-control"
+                           autocomplete="off" id="exampleInputAmount" placeholder="9999999素材任意下载"/>
+                    <div class="input-group-addon input-group-button">
+                        <a class="btn-search" onclick="headerSelectSubmit()">搜索</a>
+                    </div>
+                </div>
+                <div class="search-result">
+                    <table class="table table-hover ">
+                        <tbody class="table-tbody">
+                        </tbody>
+                    </table>
+                </div>
+              <!--  <div class="view-categories">
+
+                </div>-->
+            </div>
+        </form>
+        <div th:if="${loginUser == null}" class="navbar-right">
+            <button type="button" class="btn btn-default" onclick="login();">登陆</button>
+            <button type="button" class="btn btn-primary-self" onclick="regist();">注册</button>
+        </div>
+        <div th:if="${loginUser != null}" class="navbar-right">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false" style="height:34px;padding:7px 10px;">
+                        <span th:text="${loginUser.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-menu-header">
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;用户名：</span>
+                            <span th:text="${loginUser.userName}"></span>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/front/myself">个人中心</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <button type="button" class="btn" onclick="logout();">退出</button>
+        </div>
+    </div>
+</nav>

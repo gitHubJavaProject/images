@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <title>创建角色</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <link rel="stylesheet" href="/vendor/plugins/bootstrap-table/bootstrap-table.min.css"/>
+    <style>
+        .form-row {
+            margin: 0px auto 15px auto;
+        }
+
+        .form-group .help-block {
+            display: none;
+        }
+
+        .form-group .help-block-show {
+            display: block;
+        }
+
+        .form-group .form-control-feedback {
+            pointer-events: all;
+            position: absolute;
+            right: 0px;
+            top: 24px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div id="app" class="container-fluid">
+    <div class="row" style="margin: 10px auto 0px auto;">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8" style="padding: 0px 0px;">
+            <h3>创建角色</h3>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <form novalidate="true" v-on:submit.prevent="createRole">
+                <div class="form-group" v-bind:class="validationClass('name')">
+                    <label for="name" class="control-label">角色名</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入名字" v-model="role.name"/>
+                    <span class="help-block" v-if="!$v.role.name.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请输入角色名</span>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="control-label">描述</label>
+                    <textarea  class="form-control" id="description" placeholder="请描述一下" v-model="role.description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" data-loading-text="提交中">提交</button>
+            </form>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script src="/vendor/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.role = /*[[${role}]]*/ null
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    var app = new Vue({
+        el: '#app',
+        mixins: [vuelidate.validationMixin],
+        data: {
+            afterValidation: false,
+            role: {
+                id: null,
+                name: null,
+                description: null
+            }
+        },
+        validations: {
+            role: {
+                name: {
+                    required: validators.required
+                }
+            }
+        },
+        methods: {
+            validationClass: function (fieldName) {
+                const field = this.$v.role[fieldName]
+                if (field) {
+                    return {
+                        'has-error': field.$invalid && this.afterValidation
+                    }
+                }
+            },
+            createRole: function () {
+                var self = this
+                this.afterValidation = true
+                if (!this.$v.$invalid) {
+                    before();
+                    if (self.role.id) {
+                        $.ajax({
+                            method: 'put',
+                            url: '/business/p/roles/update/'+self.role.id,
+                            data: $.param(self.role),
+                            dataType: 'json',
+                            success: function (result) {
+                                after();
+                                self.afterValidation = false;
+                                if (result.code == 204) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        window.location.href = '/business/p/roles/list';
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                            },
+                            error: function (res) {
+                                after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    } else {
+                        $.ajax({
+                            method: 'post',
+                            url: '/business/p/roles/add',
+                            data: $.param(self.role),
+                            dataType: 'json',
+                            success: function (result) {
+                                after();
+                                self.afterValidation = false;
+                                if (result.code == 201) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        window.location.href = '/business/p/roles/list';
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                            },
+                            error: function (res) {
+                                after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    }
+                }
+            }
+        },
+        mounted: function () {
+            if (role) {
+                this.role.id = role.id
+                this.role.name = role.name
+                this.role.description = role.description
+            }
+        }
+    })
+
+    function before() {
+        $('button[type=submit]').button('loading');
+    }
+
+    function after() {
+        $('button[type=submit]').button('reset');
+    }
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

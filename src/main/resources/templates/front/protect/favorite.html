@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title>个人中心</title>
+    <link rel="stylesheet" href="/css/front/application.css"/>
+    <script src="/js/front/application.js"></script>
+    <style>
+        .favorite-cover {
+            overflow: initial;
+        }
+
+        .favorite-cover {
+            min-width: 1200px;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+            height: 320px;
+        }
+        .favorite-cover .cover-bg1 {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: -1;
+        }
+        .favorite-cover .w1200 {
+            position: relative;
+        }
+
+        .w1200 {
+            width: 1200px;
+            margin: 0 auto;
+        }
+        .fl {
+            float: left;
+        }
+        .favorite-cover .cover-left {
+            width: 260px;
+        }
+        .favorite-cover .cover-bg1::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(hsla(0,0%,100%,.8),hsla(0,0%,100%,.9) 50%,#fff);
+            top: 0;
+            left: 0;
+        }
+
+        .favorite-cover .cover-userinfo {
+            margin-bottom: 30px;
+        }
+        .favorite-cover .cover-info {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .favorite-cover .cover-info {
+            font-size: 12px;
+        }
+        .favorite-cover .cover-title {
+            color: #666;
+            margin-bottom: 44px;
+            margin-top: 36px;
+            font-weight: 400;
+            font-size: 36px;
+        }
+        .favorite-cover .cover-userinfo p {
+            color: #666;
+        }
+        .favorite-cover .cover-info span {
+            color: #666;
+        }
+        a {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .favorite-cover .cover-userinfo .user-img {
+            border: 0;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+            -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+            border-radius: 50%;
+        }
+
+        .favorite-cover .cover-info {
+            position: absolute;
+            bottom: 0;
+            font-size: 12px;
+        }
+        .fav-num {
+            font-size: 16px;
+            color: #666;
+        }
+
+        fav-num i {
+            display: inline-block;
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACKUlEQ…oyQwiV1zJ6yK7MUbgZYzxYSfJibMEuTP7PD+iQ9UYL/ARZmYkzlBr1hgAAAABJRU5ErkJggg==) no-repeat;
+            width: 24px;
+            height: 22px;
+            vertical-align: sub;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<head th:replace="_shared/front/header :: header"></head>
+<div id="app" class="container-fluid">
+    <div class="favorite-cover">
+        <div class="cover-bg1"
+             v-bind:style="'background: url(/file/show?path='+favorite.url+') 100%;background-size:cover;'"></div>
+        <div class="w1200 clearfix">
+            <div class="fl cover-left" style="width: 205px;">
+                <img v-bind:src="'/file/show?path='+favorite.url" width="165" height="220" /></div>
+            <div class="fl cover-right" style="width: 630px;height: 220px;">
+                <div class="clearfix cover-userinfo"><p class="cover-title">大家都会挖的哈的</p>
+                    <a href="http://www.58pic.com/member/36611892/favorPage" title="TA的个人主页" target="_blank" rel="nofollow">
+                        <p class="fl">
+                            <img class="user-img" src="http://qzapp.qlogo.cn/qzapp/100414805/A959FB5C8E8EFF57CEF6B6F21D563CA0/100"
+                                                              width="32" height="32" alt=""/>追夢</p></a></div>
+                <p class="cover-info"><span><i class="icon-eye"></i>1</span><span><i
+                        class="icon-attention-num"></i>0</span><span><i class="icon-created-at"></i>2018-04-22 16:16:37</span>
+                </p></div>
+
+        </div>
+    </div>
+    <p class="w1200 fav-num"><i></i>1个作品</p>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="newFavModalId">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span
+                                        aria-hidden="true">&times;
+                                </span>
+                    </button>
+                    <h4 class="modal-title">创建收藏夹</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" v-on:submit.present="addFav">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">名称*</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" placeholder="名称"
+                                       v-model="favorite.name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-10">
+                                        <textarea class="form-control" placeholder="描述"
+                                                  v-model="favorite.description"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">封面图片</label>
+                            <div class="show-image col-sm-10">
+                                <a v-bind:href="'/file/show?path='+favorite.url" target="_blank">
+                                    <img v-bind:src="'/file/show?path='+favorite.url" alt=""
+                                         style="width:140px;height:140px;background: #ddd;"
+                                         class="img-thumbnail"/>
+                                </a>
+                                <input style="left:15px;" type="file" name="file" class="file-input"
+                                       id="inputFileId1"
+                                       onchange="favoriteFileUpload()"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary-myself">保存</button>
+                                <button type="button" class="btn btn-default-myself" data-dismiss="modal">返回
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="_shared/front/footer :: footer"></div>
+<section th:replace="_shared/foot :: foot"></section>
+<script src="/vendor/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.favorite = /*[[${favorite}]]*/ null
+    window.images = /*[[${images}]]*/ null
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    var app = new Vue({
+        el: "#app",
+        data: {
+            favorite: favorite,
+            images: images
+        }
+    })
+    /*]]>*/
+</script>
+</body>
+</html>

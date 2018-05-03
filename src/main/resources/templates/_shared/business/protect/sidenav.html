@@ -1,0 +1,62 @@
+<div th:fragment="sidenav" class="sidenav">
+  <div class="sidenav-header clearfix visible-xs">
+    <div class="navbar-brand">
+      <img alt="CCPIT" src="/images/logo.png"/>
+      <span class="navbar-brand-text">图片管理系统</span>
+    </div>
+  </div>
+  <ul class="sidenav-list">
+    <li class="sidenav-list-item" th:if="${permission_checker.hasPrivilege('/users/all/')}">
+      <div class="sidenav-list-item-expand">
+        <a href="#">
+          <div class="sidenav-list-item-content">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <span class="sidenav-list-item-text">权限管理</span>
+          </div>
+        </a>
+        <ul class="sidenav-list">
+          <li class="sidenav-list-item inset" th:if="${permission_checker.hasPrivilege('/users/list/')}">
+            <a href="/business/p/users/list">
+              <div class="sidenav-list-item-content">
+                <span class="sidenav-list-item-text">用户</span>
+              </div>
+            </a>
+          </li>
+          <li class="sidenav-list-item inset" th:if="${permission_checker.hasPrivilege('/roles/list/')}">
+            <a href="/business/p/roles/list">
+              <div class="sidenav-list-item-content">
+                <span class="sidenav-list-item-text">角色</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li class="sidenav-list-item" th:if="${permission_checker.hasPrivilege('/images/all/')}">
+      <div class="sidenav-list-item-expand">
+        <a href="#">
+          <div class="sidenav-list-item-content">
+            <span class="glyphicon glyphicon-leaf" aria-hidden="true"></span>
+            <span class="sidenav-list-item-text">图片管理</span>
+          </div>
+        </a>
+        <ul class="sidenav-list">
+          <li class="sidenav-list-item inset" th:if="${permission_checker.hasPrivilege('/images/list/')}">
+            <a href="/business/p/images/list">
+              <div class="sidenav-list-item-content">
+                <span class="sidenav-list-item-text">图片信息</span>
+              </div>
+            </a>
+          </li>
+          <li class="sidenav-list-item inset" th:if="${permission_checker.hasPrivilege('/categories/list/')}">
+            <a href="/business/p/categories/list">
+              <div class="sidenav-list-item-content">
+                <span class="sidenav-list-item-text">类型分类</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>

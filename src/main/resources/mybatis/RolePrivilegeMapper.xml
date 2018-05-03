@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.img.images.mapper.RolePrivilegeMapper">
+    <resultMap id="BaseResultMap" type="com.img.images.model.RolePrivilege">
+        <id column="id" property="id"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="role_id" property="roleId"/>
+        <result column="privilege_id" property="privilegeId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, create_date, update_date, role_id, privilege_id
+  </sql>
+
+    <select id="findRolePrivilegesByRoleIds" resultMap="BaseResultMap" parameterType="list">
+        select
+        <include refid="Base_Column_List"/>
+        from role_privilege
+        where role_id in
+        <foreach collection="list" open="(" close=")" separator="," item="roleId">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <delete id="deleteByPrivilege">
+        delete
+        from
+        role_privilege
+        where role_id=#{roleId} and privilege_id=#{privilegeId}
+    </delete>
+
+    <insert id="save" parameterType="com.img.images.model.RolePrivilege" useGeneratedKeys="true" keyProperty="id">
+      insert into
+      role_privilege
+      (
+      role_id,
+      privilege_id,
+      create_date,
+      update_date
+      )
+      values
+      (
+      #{roleId},
+      #{privilegeId},
+      now(),
+      now()
+      )
+    </insert>
+    
+    <select id="getByPrivilege" resultMap="BaseResultMap">
+        select
+        *
+        from
+        role_privilege
+        where role_id=#{roleId} and privilege_id=#{privilegeId}
+    </select>
+</mapper>

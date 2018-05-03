@@ -1,0 +1,53 @@
+body {
+  background-color: rgb(245, 246, 248);
+}
+
+.a4-paper {
+  background-color: white;
+  max-width: 816px;
+  min-height: 1056px;
+  cursor: text;
+  overflow: hidden;
+  position: relative;
+  white-space: normal;
+  border: 0;
+  margin: 3.75pt auto;
+  box-shadow: 0 0 0 0.75pt #d1d1d1, 0 0 3pt 0.75pt #ccc;
+}
+
+@media (max-width: 816px) {
+  .a4-paper {
+    margin: 0 auto;
+  }
+}
+
+.a4-paper-header {
+  min-height: 96px;
+}
+
+@media (max-width: 768px) {
+  .a4-paper .a4-paper-header {
+    min-height: 26px;
+  }
+}
+
+.a4-paper-bottom {
+  min-height: 96px;
+}
+
+@media (max-width: 768px) {
+  .a4-paper .a4-paper-bottom {
+    min-height: 26px;
+  }
+}
+
+.a4-paper-content {
+  margin: 0 96px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .a4-paper .a4-paper-content {
+    margin: 0 16px;
+  }
+}

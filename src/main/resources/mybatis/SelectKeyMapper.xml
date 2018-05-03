@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.img.images.mapper.SelectKeyMapper">
+    <resultMap id="BaseResultMap" type="com.img.images.model.SelectKey">
+        <id column="id" property="id" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+        <result column="key" property="key" />
+        <result column="select_number" property="selectNumber" />
+    </resultMap>
+    <select id="find" resultMap="BaseResultMap">
+      SELECT
+      s.id,s.key,s.select_number
+      FROM
+      select_key s
+      where 1=1
+      <if test="param != null and param != ''">and s.key like "%"#{param}"%"</if>
+      order BY
+      s.select_number DESC
+      limit 10
+    </select>
+
+
+</mapper>

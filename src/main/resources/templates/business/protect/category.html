@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <title>创建用户</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <link rel="stylesheet" href="/vendor/plugins/bootstrap-table/bootstrap-table.min.css"/>
+    <style>
+        .form-row {
+            margin: 0px auto 15px auto;
+        }
+
+        .form-group .help-block {
+            display: none;
+        }
+
+        .form-group .help-block-show {
+            display: block;
+        }
+
+        .form-group .form-control-feedback {
+            pointer-events: all;
+            position: absolute;
+            right: 0px;
+            top: 24px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .row-categories .col-md-3 {
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+            height: 400px;
+            min-width: 250px;
+            padding: 40px 30px;
+            border-radius: 6px;
+            overFlow-x: hidden;
+            overFlow-y: scroll;
+            margin-bottom: 10px;
+        }
+
+        .row-categories {
+            margin-left: 30px;
+            margin-top: 20px;
+        }
+
+        .row-categories .col-md-1 {
+            text-align: center;
+            line-height:300px;
+        }
+
+        .row-categories .glyphicon {
+            font-size: x-large;
+        }
+
+        .row-categories .glyphicon-plus {
+            position: absolute;
+            right: 3px;
+            top: 3px;
+            cursor: pointer;
+        }
+
+        .row-main .col-md-8 {
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+            padding:20px 15px;
+            border-radius: 4px;
+        }
+
+       /* .category-div-two {
+            display: none;
+        }
+
+        .category-div-three {
+            display: none;
+        }
+*/
+        .row-categories .glyphicon-remove-sign {
+
+        }
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div id="app" class="container-fluid">
+    <div class="row" style="margin: 10px auto 0px auto;">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8" style="padding: 0px 0px;">
+            <h3>类型信息</h3>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="row row-main">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <form novalidate="true" v-on:submit.prevent="createCategory">
+                <div class="form-group" v-bind:class="validationClass('name')">
+                    <label for="name" class="control-label">名称*</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入名称" v-model="category.name"/>
+                    <span class="help-block" v-if="!$v.category.name.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请输入名称</span>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="control-label">描述</label>
+                    <textarea type="text" class="form-control" id="description" placeholder="描述一下"
+                              v-model="category.description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" data-loading-text="保存中">保存</button>
+             </form>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="row row-categories">
+        <div class="col-md-3">
+            <span class="glyphicon glyphicon-plus" v-on:click="addCategory(1)"></span>
+           <table class="table table-hover table-categoriesOne">
+                <tbody>
+                    <tr v-for="cat in categoriesOne">
+                        <td class="active" v-on:click="selectCategory(cat,$event)" v-html="cat.name"></td>
+                        <td style="width:20px;"><span class="glyphicon glyphicon-remove-sign" v-on:click="deleteCategory(cat)"></span></td>
+                    </tr>
+                </tbody>
+           </table>
+        </div>
+        <div class="col-md-1 category-div-two">
+            <span class="glyphicon glyphicon-forward"></span>
+        </div>
+        <div class="col-md-3 category-div-two">
+            <span class="glyphicon glyphicon-plus" v-on:click="addCategory(2)"></span>
+            <table class="table table-hover table-categoriesTwo">
+                <tbody>
+                <tr v-for="cat in categoriesTwo" v-if="cat.parent == categoryOne.id">
+                    <td class="active" v-on:click="selectCategory(cat,$event)" v-html="cat.name"></td>
+                    <td style="width:20px;"><span class="glyphicon glyphicon-remove-sign" v-on:click="deleteCategory(cat)"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-1 category-div-three">
+            <span class="glyphicon glyphicon-forward"></span>
+        </div>
+        <div class="col-md-3 category-div-three">
+            <span class="glyphicon glyphicon-plus" v-on:click="addCategory(3)"></span>
+            <table class="table table-hover table-categoriesThree">
+                <tbody>
+                <tr v-for="cat in categoriesThree" v-if="cat.parent == categoryTwo.id">
+                    <td class="active" v-on:click="selectCategory(cat,$event)" v-html="cat.name"></td>
+                    <td style="width:20px;"><span class="glyphicon glyphicon-remove-sign" v-on:click="deleteCategory(cat)"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script src="/vendor/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.categoriesOne = /*[[${categoriesOne}]]*/ null
+    window.categoriesTwo = /*[[${categoriesTwo}]]*/ null
+    window.categoriesThree = /*[[${categoriesThree}]]*/ null
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    var app = new Vue({
+        el: '#app',
+        mixins: [vuelidate.validationMixin],
+        data: {
+            afterValidation: false,
+            category: {
+                id: null,
+                name: null,
+                description: null,
+                parent: null,
+                level: null
+            },
+            categoryOne: {
+                id: null,
+                name: null,
+                description: null,
+                parent: null,
+                level: null
+            },
+            categoryTwo: {
+                id: null,
+                name: null,
+                description: null,
+                parent: null,
+                level: null
+            },
+            categoryThree: {
+                id: null,
+                name: null,
+                description: null,
+                parent: null,
+                level: null
+            },
+            categoriesOne: [],
+            categoriesTwo: [],
+            categoriesThree: []
+        },
+        validations: {
+            category: {
+                name: {
+                    required: validators.required
+                },
+                parent: {
+                    required: validators.required
+                },
+                level: {
+                    required: validators.required
+                }
+            }
+        },
+        methods: {
+            clearSelect: function (cat) {
+                var level = 'One';
+                if (cat.level == 2) {
+                    level = 'Two';
+                }
+                if (cat.level == 3) {
+                    level = 'Three';
+                }
+                var table_categories = $($('.table-categories'+level).children()[0]).children()
+                this.forElment(table_categories);
+            },
+            deleteCategory: function (cat) {
+                var self = this
+                swal({
+                    text: '确定删除吗？',
+                    title: '删除后其所有子类型也会被删除！',
+                    icon: 'warning',
+                    buttons: ['取消', '确定']
+                }).then(function (value) {
+                    if(value){
+                        $.ajax({
+                            url: '/business/p/categories/delete/'+cat.id,
+                            type: 'delete',
+                            success: function (result) {
+                                if (result.code == 204) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        var categoriesOne = []
+                                        self.categoriesOne.forEach(function (value2) {
+                                            if (value2.id != cat.id && value2.parent != cat.id) {
+                                                categoriesOne.push(value2)
+                                            }
+                                        })
+                                        self.categoriesOne = categoriesOne
+                                        var categoriesTwo = []
+                                        self.categoriesTwo.forEach(function (value2) {
+                                            if (value2.id != cat.id && value2.parent != cat.id) {
+                                                categoriesTwo.push(value2)
+                                            }
+                                        })
+                                        self.categoriesTwo = categoriesTwo
+                                        var categoriesThree = []
+                                        self.categoriesThree.forEach(function (value2) {
+                                            if (value2.id != cat.id && value2.parent != cat.id) {
+                                                categoriesThree.push(value2)
+                                            }
+                                        })
+                                        self.categoriesThree = categoriesThree
+                                        self.clearSelect(cat);
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                                
+                            },
+                            error: function (res) {
+                                //after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    }
+                })
+            },
+            forCategory: function (params, self) {
+                params.forEach(function (value) {
+                    if (value.id == self.category.id) {
+                        value.name = self.category.name
+                        value.description = self.category.description
+                    }
+                })
+            },
+            addCategory: function (level) {
+                if (level == 1) {
+                    this.category.level = 1
+                    this.category.parent = 0
+                }
+                if (level == 2) {
+                    this.category.level = 2
+                    this.category.parent = this.categoryOne.id
+                }
+                if(level == 3) {
+                    this.category.level = 3
+                    this.category.parent = this.categoryTwo.id
+                }
+                this.category.id = null
+                this.category.name = null
+                this.category.description = null
+                $('.row-main').hide(10, function () {
+                    $('.row-main').show(500)
+                })
+            },
+            forElment: function (categoryElments) {
+                for(var i = 0; i < categoryElments.length; i++){
+                    $($(categoryElments[i]).children()[0]).attr('class', 'active')
+                }
+            },
+            selectCategory: function (cat, event) {
+                var categoryElments = $(event.srcElement).parent().parent().children()
+                this.forElment(categoryElments);
+                $(event.srcElement).attr('class', 'info')
+                this.category.id = cat.id
+                this.category.name = cat.name
+                this.category.description = cat.description
+                this.category.parent = cat.parent
+                this.category.level = cat.level
+                if(cat.level == 1) {
+                    this.categoryTwo = {
+                        id: null,
+                        name: null,
+                        description: null,
+                        parent: null,
+                        level: null
+                    }
+                    this.categoryOne = cat
+                    var table_categoriesTwo = $($('.table-categoriesTwo').children()[0]).children()
+                    this.forElment(table_categoriesTwo);
+                    if ($('.category-div-two').css('display') == 'none') {
+                        $('.category-div-two').show(500)
+                        $('.category-div-three').hide()
+                    } else {
+                        $('.category-div-two').hide(10, function () {
+                            $('.category-div-two').show(500)
+                            $('.category-div-three').hide()
+                        })
+                    }
+                }
+                if(cat.level == 2) {
+                    this.categoryTwo = cat
+                    var table_categoriesThree = $($('.table-categoriesThree').children()[0]).children()
+                    this.forElment(table_categoriesThree);
+                    if ($('.category-div-three').css('display') == 'none') {
+                        $('.category-div-three').show(500)
+                    } else {
+                        $('.category-div-three').hide(10, function () {
+                            $('.category-div-three').show(500)
+                        })
+                    }
+                }
+            },
+            validationClass: function (fieldName) {
+                const field = this.$v.category[fieldName]
+                if (field) {
+                    return {
+                        'has-error': field.$invalid && this.afterValidation
+                    }
+                }
+            },
+            createCategory: function () {
+                var self = this
+                this.afterValidation = true
+                if (!this.$v.$invalid) {
+                    before();
+                    if (self.category.id) {
+                        $.ajax({
+                            method: 'put',
+                            url: '/business/p/categories/update/'+self.category.id,
+                            data: $.param(self.category),
+                            dataType: 'json',
+                            success: function (result) {
+                                after();
+                                self.afterValidation = false;
+                                if (result.code == 204) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        if (self.category.level == 1) {
+                                            self.forCategory(self.categoriesOne, self)
+                                        }
+                                        if (self.category.level == 2) {
+                                            self.forCategory(self.categoriesTwo, self)
+                                        }
+                                        if (self.category.level == 3) {
+                                            self.forCategory(self.categoriesThree, self)
+                                        }
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                            },
+                            error: function (res) {
+                                after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    } else {
+                        $.ajax({
+                            method: 'post',
+                            url: '/business/p/categories/add',
+                            data: $.param(self.category),
+                            dataType: 'json',
+                            success: function (result) {
+                                after();
+                                self.afterValidation = false;
+                                if (result.code == 201) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        if (self.category.level == 1) {
+                                            self.categoriesOne.unshift(result.category)
+                                        }
+                                        if (self.category.level == 2) {
+                                            self.categoriesTwo.unshift(result.category)
+                                        }
+                                        if (self.category.level == 3) {
+                                            self.categoriesThree.unshift(result.category)
+                                        }
+                                        self.category.id = null
+                                        self.category.name = null
+                                        self.category.description = null
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                            },
+                            error: function (res) {
+                                after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    }
+                }
+            }
+        },
+        mounted: function () {
+            if (categoriesOne) {
+                this.categoriesOne = categoriesOne
+            }
+            if (categoriesTwo) {
+                this.categoriesTwo = categoriesTwo
+            }
+            if (categoriesThree) {
+                this.categoriesThree = categoriesThree
+            }
+        }
+    })
+
+    function before() {
+        $('button[type=submit]').button('loading');
+    }
+
+    function after() {
+        $('button[type=submit]').button('reset');
+    }
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

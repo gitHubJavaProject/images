@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/sweetalert.min.js"></script>
+    <title>权限列表</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <link rel="stylesheet" href="/vendor/plugins/bootstrap-table/bootstrap-table.min.css"/>
+    <style>
+        .form-row {
+            margin: 0px auto 15px auto;
+        }
+
+        .form-search {
+            text-align: right;
+        }
+
+        .table-users {
+            box-shadow: 0 1px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 1px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+        }
+
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div class="container-fluid">
+    <div class="row" style="margin: 10px auto 0px auto;">
+        <div class="col-md-12" style="padding: 0px 0px;">
+            <h3>权限列表&nbsp;<a type="button" class="btn btn-sm btn-primary" th:href="@{/business/p/privileges/_}">新增</a></h3>
+        </div>
+    </div>
+    <div class="row form-row">
+        <div class="col-md-12" style="padding: 0px 0px;">
+            <form method="get" class="form-inline form-search" action="/business/p/privileges/list">
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control input-sm" id="name" placeholder="请输入名字"
+                           th:value="${name}"/>
+                </div>
+                <button type="submit" class="btn btn-sm btn-default">搜索</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-striped table-users">
+                <thead>
+                <tr>
+                    <th style="width: 45px">序号</th>
+                    <th style="color: #337ab7;">权限名</th>
+
+                    <th style="width: 160px;">日期</th>
+                    <th style="width: 160px;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="privilege,privilegeStat:${privileges}">
+                    <th scope="row" class="text-center" th:text="${privilegeStat.count}"></th>
+                    <td><a th:href="@{'/business/p/privileges/list/'+${privilege.id}}" th:text="${privilege.name}"></a></td>
+                    <td th:text="${#dates.format(privilege.updateDate,'yyyy年MM月dd日')}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" >删除</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:replace="_shared/business/paginator :: paginator(baseurl='/business/p/privileges/list?name='+${name},
+             page=${page}, size=${size}, count=${#lists.size(privileges)})">
+            </div>
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script type="text/javascript">
+    /*<![CDATA[*/
+
+    /*]]>*/
+</script>
+</body>
+</html>

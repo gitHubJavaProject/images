@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.img.images.mapper.PrivilegeMapper">
+    <resultMap id="BaseResultMap" type="com.img.images.model.Privilege">
+        <id column="id" property="id"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="resource" property="resource"/>
+        <result column="action" property="action"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, resource, action, parent_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from privilege
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="findPrivilegesByIds" resultMap="BaseResultMap" parameterType="list">
+        select
+        <include refid="Base_Column_List"/>
+        from privilege
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from privilege
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.img.images.model.Privilege">
+    insert into privilege (create_date, module, action, note, parent_id
+      )
+    values (#{createDate,jdbcType=TIMESTAMP}, #{module,jdbcType=VARCHAR},
+      #{action,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}
+      )
+  </insert>
+
+    <select id="search" parameterType="map" resultMap="BaseResultMap">
+        select
+        *
+        from privilege u
+        where 1=1
+        <if test="name != null and name != ''">and u.name = #{name}</if>
+        order by u.update_date desc
+        limit #{offset},#{size}
+    </select>
+
+    <select id="getAllPrivileges" resultMap="BaseResultMap">
+        select
+        *
+        from privilege
+    </select>
+
+    <select id="get" resultMap="BaseResultMap">
+        select
+        *
+        from privilege
+        where id=#{id}
+    </select>
+
+    <delete id="delete">
+      delete
+      from privilege
+      where id=#{id}
+    </delete>
+
+    <select id="getByParent" resultMap="BaseResultMap">
+      SELECT
+      *
+      from PRIVILEGE
+      where parent_id=#{id}
+    </select>
+
+    <insert id="save" parameterType="com.img.images.model.Privilege" useGeneratedKeys="true" keyProperty="id">
+      insert into privilege
+        (
+        `name`,
+        `resource`,
+        `action`,
+        `parent_id`,
+        `create_date`,
+        `update_date`
+        )
+        values
+        (
+        #{name},
+        #{resource},
+        #{action},
+        #{parentId},
+        now(),
+        now()
+        )
+    </insert>
+
+    <update id="update" parameterType="com.img.images.model.Privilege">
+        update privilege
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="resource != null">`resource` = #{resource},</if>
+            <if test="action != null">`action` = #{action},</if>
+            <if test="parentId != null">`parent_id` = #{parentId},</if>
+            update_date=now()
+        </set>
+        where id = #{id}
+
+    </update>
+</mapper>

@@ -1,0 +1,17 @@
+<div th:fragment="paginator" class="paginator text-center">
+  <div class="btn-toolbar" role="toolbar">
+    <div th:if="${page>1 or count>0}" class="btn-group " role="group">
+      <a th:href="@{${baseurl}('page'=${(page-1)>1?(page-1):1},'size'=${size})}" class="btn btn-default btn-sm"
+         title="上一页">
+        <span class="glyphicon glyphicon-menu-left"></span>
+      </a>
+      <a th:if="${page>1}" href="javascript:void(0)" class="btn btn-default btn-sm">...</a>
+      <a href="javascript:void(0)" class="btn btn-default btn-sm" th:text="${page}"></a>
+      <a th:if="${count == size}" href="javascript:void(0)" class="btn btn-default btn-sm">...</a>
+      <a th:if="${count == size}" th:href="@{${baseurl}('page'=${page+1},'size'=${size})}"
+         class="btn btn-default btn-sm" title="下一页">
+        <span class="glyphicon glyphicon-menu-right"></span>
+      </a>
+    </div>
+  </div>
+</div>

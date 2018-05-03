@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.img.images.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.img.images.model.User">
+        <id column="id" property="id"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="user_name" property="userName"/>
+        <result column="name" property="name"/>
+        <result column="pwd" property="pwd"/>
+        <result column="role_name" property="roleName"/>
+        <result column="status" property="status"/>
+        <result column="header" property="header"/>
+    </resultMap>
+
+    <resultMap id="UserRoleResultMap" type="com.img.images.model.UserRole">
+        <id column="id" property="id"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="user_id" property="userId"/>
+        <result column="role_id" property="userId"/>
+        <result column="role_name" property="roleName"/>
+    </resultMap>
+
+    <resultMap id="PrivilegeResultMap" type="com.img.images.model.Privilege">
+        <id column="id" property="id"/>
+        <result column="resource" property="resource"/>
+        <result column="action" property="action"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, user_name, pwd, status
+    </sql>
+
+    <insert id="create" parameterType="com.img.images.model.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user (create_date,update_date, user_name, name, pwd, status, header)
+        values (now(), now(), #{userName}, #{name}, #{pwd}, #{status}, #{header})
+    </insert>
+
+    <update id="updatePwd">
+        update user
+        set  pwd = #{pwd}
+        where id = #{id}
+    </update>
+
+    <update id="update" parameterType="com.img.images.model.User">
+        update user
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="pwd != null">pwd = #{pwd},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="header != null">header = #{header},</if>
+            update_date = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="startOrStopUser" parameterType="com.img.images.model.User">
+        update user
+        set  status = #{status}
+        where id = #{id}
+    </update>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="getByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        *
+        from user
+        where user_name = #{userName}
+    </select>
+
+    <select id="search" parameterType="map" resultMap="BaseResultMap">
+        select
+        *
+        from user u
+        where 1=1
+        <if test="name != null and name != ''">and u.name = #{name}</if>
+        order by u.update_date desc
+        limit #{offset},#{size}
+    </select>
+
+    <select id="getUserRoleByUserId" resultMap="UserRoleResultMap">
+        select
+        ur.*, r.name as role_name
+        from user_role ur left join role r ON r.id=ur.role_id
+        where ur.user_id = #{userId}
+    </select>
+
+    <select id="getPrivilegesByUser" resultMap="PrivilegeResultMap">
+        select
+        p.id,p.resource,p.action
+        from
+        privilege p
+        left join
+        role_privilege rp
+        on rp.privilege_id=p.id
+        left join
+        user_role ur
+        on ur.role_id=rp.role_id
+        where ur.user_id=#{id}
+    </select>
+</mapper>

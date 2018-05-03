@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/sweetalert.min.js"></script>
+    <title>用户列表</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <link rel="stylesheet" href="/vendor/plugins/bootstrap-table/bootstrap-table.min.css"/>
+    <style>
+        .form-row {
+            margin: 0px auto 15px auto;
+        }
+
+        .form-search {
+            text-align: right;
+        }
+
+        .table-users {
+            box-shadow: 0 1px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 1px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+        }
+
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div class="container-fluid">
+    <div class="row" style="margin: 10px auto 0px auto;">
+        <div class="col-md-12" style="padding: 0px 0px;">
+            <h3>用户列表&nbsp;<a type="button" class="btn btn-sm btn-primary" th:href="@{/business/p/users/_}">新增</a></h3>
+        </div>
+    </div>
+    <div class="row form-row">
+        <div class="col-md-12" style="padding: 0px 0px;">
+            <form method="get" class="form-inline form-search" action="/business/p/users/list">
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control input-sm" id="name" placeholder="请输入名字"
+                           th:value="${name}"/>
+                </div>
+                <button type="submit" class="btn btn-sm btn-default">搜索</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-striped table-users">
+                <thead>
+                <tr>
+                    <th style="width: 45px">序号</th>
+                    <th style="color: #337ab7;">姓名</th>
+                    <th>用户名</th>
+                    <th style="color: #337ab7;width: 100px;">角色</th>
+                    <th style="width: 100px;">状态</th>
+                    <th style="width: 160px;">日期</th>
+                    <th style="width: 160px;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user,userStat:${users}">
+                    <th scope="row" class="text-center" th:text="${userStat.count}"></th>
+                    <td><a th:href="@{'/business/p/users/list/'+${user.id}}" th:text="${user.name}"></a></td>
+                    <td th:text="${user.userName}"></td>
+                    <td>
+                        <a th:href="@{'/business/p/users/'+${user.id}+'/changeRoles'}"
+                           th:text="${user.roleName == null?'无':user.roleName}"></a>
+                    </td>
+                    <td th:if="${user.status == 1}">启用</td>
+                    <td th:if="${user.status == 2}">禁用</td>
+                    <td th:text="${#dates.format(user.updateDate,'yyyy年MM月dd日')}"></td>
+                    <td>
+                        <button th:id="${user.id}" th:if="${user.status == 1}" type="button"
+                                class="btn btn-sm btn-danger" data-loading-text="禁用中"
+                                onclick="startOrStopUser(this);">禁用
+                        </button>
+                        <button th:id="${user.id}" th:if="${user.status == 2}" type="button"
+                                class="btn btn-sm btn-default" data-loading-text="启用中"
+                                onclick="startOrStopUser(this);">启用
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:replace="_shared/business/paginator :: paginator(baseurl='/business/p/users/list?name='+${name},
+             page=${page}, size=${size}, count=${#lists.size(users)})">
+            </div>
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    function startOrStopUser(ths) {
+        var param = $(ths).attr("id");
+        $(ths).button("loading");
+        $.ajax({
+            method: 'patch',
+            url: '/business/p/users/' + param + '/startOrStopUser',
+            dataType: 'json',
+            success: function (result) {
+                $(ths).button("reset");
+                if (result.code == 204) {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: 'success'
+                    }).then(function () {
+                        window.location.href = '/business/p/users/list';
+                    })
+                } else {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    })
+                }
+            },
+            error: function (res) {
+                //console.log(res)
+                resErrorMsg(res)
+            }
+        })
+    }
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

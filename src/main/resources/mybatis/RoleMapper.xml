@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.img.images.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.img.images.model.Role">
+    <id column="id" property="id" />
+    <result column="create_date" property="createDate" />
+    <result column="update_date" property="updateDate" />
+    <result column="name" property="name" />
+    <result column="description" property="description" />
+  </resultMap>
+  <resultMap id="PrivilegeResultMap" type="com.img.images.model.Privilege">
+    <id column="id" property="id"/>
+    <result column="create_date" property="createDate"/>
+    <result column="update_date" property="updateDate"/>
+    <result column="resource" property="resource"/>
+    <result column="action" property="action"/>
+    <result column="parent_id" property="parentId"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, description
+  </sql>
+  <sql id="Base_Column_List_Alias">
+    role.id, role.create_date, role.update_date, role.name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.img.images.model.Role" useGeneratedKeys="true" keyProperty="id">
+    insert into role (create_date, update_date, `name`, description)
+    values (now(), now(), #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <select id="findRolesByUserId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List_Alias"/>
+    from
+    `role`
+    left join
+    user_role ON user_role.role_id = role.id
+    where
+    user_role.user_id = #{userId,jdbcType=BIGINT}
+  </select>
+
+  <select id="search" parameterType="map" resultMap="BaseResultMap">
+    select
+    *
+    from role
+    where 1=1
+    <if test="name != null and name != ''">and name = #{name}</if>
+    order by update_date desc
+    limit #{offset},#{size}
+  </select>
+
+  <select id="getPrivilegesByRole" resultMap="PrivilegeResultMap">
+    select
+    p.*
+    from role_privilege rp left join privilege p ON p.id=rp.privilege_id
+    where rp.role_id = #{id}
+  </select>
+
+  <select id="get" resultMap="BaseResultMap">
+    select
+    id,`name`,description
+    from
+    role
+    where id=#{id}
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List_Alias"/>
+    FROM
+    role
+  </select>
+  <update id="update" parameterType="com.img.images.model.Role">
+    UPDATE
+    role
+    (
+    `name`,
+    description,
+    update_date
+    )
+    VALUES
+    (
+    #{name},
+    #{description},
+    now()
+    )
+    where id=#{id}
+  </update>
+  <delete id="delete">
+    DELETE
+    FROM
+    role
+    where id=#{id}
+  </delete>
+</mapper>

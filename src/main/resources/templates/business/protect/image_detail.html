@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <script src="/vendor/AjaxFileUploader/ajaxfileupload.js"></script>
+    <script src="/vendor/AjaxFileUploader/formUtil.js"></script>
+    <title>创建用户</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <link rel="stylesheet" href="/vendor/plugins/bootstrap-table/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="/vendor/AjaxFileUploader/ajaxfileupload.css"/>
+    <link rel="stylesheet" href="/vendor/select2/css/select2.min.css"/>
+    <style>
+        .form-row {
+            margin: 0px auto 15px auto;
+        }
+
+        .form-group .help-block {
+            display: none;
+        }
+
+        .form-group .help-block-show {
+            display: block;
+        }
+
+        .form-group .form-control-feedback {
+            pointer-events: all;
+            position: absolute;
+            right: 0px;
+            top: 24px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .row-main .col-md-6 {
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+            padding: 20px 15px;
+            border-radius: 4px;
+            margin: 10px 20px;
+        }
+
+        .row-main .show-image {
+            position: relative;
+        }
+
+        .row-main .show-image .file-input {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 140px;
+            height: 140px;
+            opacity: 0.0;
+            cursor: pointer;
+        }
+
+        .row-main .file-div {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+        }
+
+        .row-main .show-image .file-input1 {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 35px;
+            height: 35px;
+            opacity: 0.0;
+            cursor: pointer;
+        }
+
+        .row-main .show-image .glyphicon {
+            font-size: xx-large;
+            cursor: pointer;
+        }
+
+        .select2-dropdown {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div id="app" class="container-fluid">
+    <div class="row" style="margin: 10px 10px 0px;">
+        <div class="col-md-12" style="padding: 0px;">
+            <h3>图片信息</h3>
+        </div>
+    </div>
+    <div class="row row-main">
+        <div class="col-md-6">
+            <form novalidate="true" v-on:submit.prevent="saveImage">
+                <div class="form-group" v-bind:class="validationClass('showImage')">
+                    <label class="control-label" for="exampleInputAmount">展览图片*</label>
+                    <div class="show-image">
+                        <a v-bind:href="'/file/show?path='+image.showImage" target="_blank">
+                            <img v-bind:src="'/file/show?path='+image.showImage" alt=""
+                                 style="width:140px;height:140px;background: #ddd;" class="img-thumbnail"/>
+                        </a>
+                        <input type="file" name="file" class="file-input" id="inputFileId" v-on:change="fileUpload"/>
+                    </div>
+                    展览图片大小规定560px*640px
+                </div>
+                <div class="form-group file-div" v-bind:class="validationClass('fileUrl')">
+                    <label class="control-label" for="exampleInputAmount">图片*</label>
+                    <div class="show-image">
+                        <span class="glyphicon glyphicon-cloud-upload"></span>
+                        <input type="file" name="file" class="file-input1" id="inputFileId1" v-on:change="fileUpload1"/>
+                    </div>
+                    <span v-if="image.fileUrl">已上传</span>
+                    <span v-if="image.fileUrl == null">未上传</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('type')">
+                    <label class="control-label">图片分类*</label>
+                    <select class="form-control" v-model="image.type">
+                        <option value="">请选择</option>
+                        <option v-for="cat in categories" v-bind:value="cat.id" v-html="cat.name"></option>
+                    </select>
+                    <span class="help-block" v-if="!$v.image.type.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请选择分类</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('name')">
+                    <label for="name" class="control-label">名称*</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入名称" v-model="image.name"/>
+                    <span class="help-block" v-if="!$v.image.name.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请输入名称</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('description')">
+                    <label for="description" class="control-label">描述</label>
+                    <textarea type="text" class="form-control" id="description" placeholder="描述一下"
+                              v-model="image.description"></textarea>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('tag')">
+                    <label class="control-label">图片类型*</label>
+                    <div>
+                        <label class="radio-inline">
+                            <input type="radio" v-model="image.tag" id="inlineRadio1" value="1"/> 共享
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" v-model="image.tag" id="inlineRadio2" value="2"/> 原创
+                        </label>
+                    </div>
+                    <span class="help-block" v-if="!$v.image.tag.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请选择类型</span>
+                </div>
+                <div class="form-group" v-bind:class="validationClass('width,height')">
+                    <label class="control-label">图片尺寸*</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="宽" v-model="image.width"/>
+                        px
+                        <input type="text" class="form-control" placeholder="高" v-model="image.height"/>
+                        px
+                    </div>
+                    <span class="help-block" v-if="!$v.image.width.required || !$v.image.height.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请输入宽高</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">标签*：</label>
+                    <select id="keys" class="form-control" multiple="multiple" v-model="image.keys">
+                        <option v-for="key in allKeys" v-bind:value="key.key" v-html="key.key"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" data-loading-text="保存中">保存</button>
+            </form>
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script src="/vendor/select2/js/select2.min.js"></script>
+<script src="/vendor/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.categories = /*[[${categories}]]*/ null
+    window.image = /*[[${image}]]*/ null
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    function uploadApplicationDoc(inputId, companyId, type, description, callback) {
+        var size = getFileSize(document.getElementById(inputId))
+        var data = {companyId: companyId, type: type, description: description}
+        if (size > 0 && size < 10485760) {
+            $.ajaxFileUpload({
+                url: '/business/p/images/addImgUrl',
+                secureuri: false,
+                type: 'post',
+                data: data,
+                fileElementId: inputId,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status == 1) {
+                        callback(null, data.fullFileName, data.docId)
+                    }
+                    if (data.status == 0) {
+                        callback(data.msg)
+                    }
+                },
+                error: function (data, status, e) {
+                    swal({
+                        text: '系统出问题了！您可以尝试重试或联系管理员！',
+                        button: '确定',
+                        icon: 'error'
+                    }).then(function () {
+                        window.location.href = '/ent/p/applicationDocs';
+                    })
+                }
+            })
+        } else {
+            if (size > 0) {
+                callback('文件大小不超过10MB！')
+            } else {
+                callback('0')
+            }
+        }
+    }
+
+    var app = new Vue({
+        el: '#app',
+        mixins: [vuelidate.validationMixin],
+        data: {
+            afterValidation: false,
+            image: {
+                name: null,
+                description: null,
+                showImage: null,
+                fileUrl: null,
+                type: '',
+                width: null,
+                height: null,
+                tag: 1,
+                keys: ["dawda","dwadasada"],
+                allKeys: []
+            },
+            categories: []
+        },
+        validations: {
+            image: {
+                name: {
+                    required: validators.required
+                },
+                type: {
+                    required: validators.required
+                },
+                tag: {
+                    required: validators.required
+                },
+                width: {
+                    required: validators.required
+                },
+                height: {
+                    required: validators.required
+                },
+                showImage: {
+                    required: validators.required
+                },
+                fileUrl: {
+                    required: validators.required
+                }
+            }
+        },
+        methods: {
+            saveImage: function () {
+                var self = this
+                this.afterValidation = true
+                if (!this.$v.$invalid) {
+                    before();
+                    if (self.image.id) {
+                        $.ajax({
+                            method: 'put',
+                            url: '/business/p/images/update/' + self.image.id,
+                            data: $.param(self.image),
+                            dataType: 'json',
+                            success: function (result) {
+                                after();
+                                self.afterValidation = false;
+                                if (result.code == 204) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        window.location.href = '/business/p/images/list'
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                            },
+                            error: function (res) {
+                                after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    } else {
+                        $.ajax({
+                            method: 'post',
+                            url: '/business/p/images/add',
+                            data: $.param(self.image),
+                            dataType: 'json',
+                            success: function (result) {
+                                after();
+                                self.afterValidation = false;
+                                if (result.code == 201) {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: 'success'
+                                    }).then(function () {
+                                        window.location.href = '/business/p/images/list'
+                                    })
+                                } else {
+                                    swal({
+                                        text: result.msg,
+                                        button: '确认',
+                                        icon: result.icon
+                                    })
+                                }
+                            },
+                            error: function (res) {
+                                after();
+                                //console.log(res)
+                                resErrorMsg(res)
+                            }
+                        })
+                    }
+                }
+            },
+            fileUpload1: function () {
+                var self = this
+                var inputId = "inputFileId1"
+                var size = getFileSize(document.getElementById(inputId))
+                //var param = {articleId: self.article.id}
+                /* if (!self.article.id) {
+                     param = null
+                 }*/
+                if (size > 0 && size < 10485760) {
+                    $.ajaxFileUpload({
+                        type: 'post',
+                        secureuri: false,
+                        url: '/business/p/images/addImgUrl',
+                        dataType: 'json',
+                        // data: param,
+                        fileElementId: inputId,
+                        success: function (data) {
+                            if (data.code === 204) {
+                                swal({
+                                    text: data.msg,
+                                    button: '确定',
+                                    icon: 'success'
+                                }).then(function () {
+                                    self.image.fileUrl = data.url
+                                })
+                            } else {
+                                swal({
+                                    text: data.msg,
+                                    button: '确定',
+                                    icon: 'warning'
+                                })
+                            }
+                        },
+                        error: function (res) {
+                            //console.log(res)
+                            resErrorMsg(res)
+                        }
+                    })
+                } else {
+                    if (size > 0) {
+                        swal({
+                            text: "图片大小不超过10M!",
+                            button: '确定',
+                            icon: 'warning'
+                        })
+                    }
+                }
+            },
+            fileUpload: function () {
+                var self = this
+                var inputId = "inputFileId"
+                var size = getFileSize(document.getElementById(inputId))
+                //var param = {articleId: self.article.id}
+                /* if (!self.article.id) {
+                     param = null
+                 }*/
+                if (size > 0 && size < 10485760) {
+                    $.ajaxFileUpload({
+                        type: 'post',
+                        secureuri: false,
+                        url: '/business/p/images/addImgUrl',
+                        dataType: 'json',
+                        // data: param,
+                        fileElementId: inputId,
+                        success: function (data) {
+                            if (data.code === 204) {
+                                swal({
+                                    text: data.msg,
+                                    button: '确定',
+                                    icon: 'success'
+                                }).then(function () {
+                                    self.image.showImage = data.url
+                                })
+                            } else {
+                                swal({
+                                    text: data.msg,
+                                    button: '确定',
+                                    icon: 'warning'
+                                })
+                            }
+                        },
+                        error: function (res) {
+                            //console.log(res)
+                            resErrorMsg(res)
+                        }
+                    })
+                } else {
+                    if (size > 0) {
+                        swal({
+                            text: "图片大小不超过10M!",
+                            button: '确定',
+                            icon: 'warning'
+                        })
+                    }
+                }
+            },
+            validationClass: function (fieldName) {
+                if (fieldName.indexOf(',')!=-1) {
+                    if (this.$v.image[fieldName.split(',')[0]].$invalid && this.afterValidation) {
+                        return 'has-error'
+                    }
+                    if (this.$v.image[fieldName.split(',')[1]].$invalid && this.afterValidation) {
+                        return 'has-error'
+                    }
+                } else {
+                    const field = this.$v.image[fieldName]
+                    if (field) {
+                        return {
+                            'has-error': field.$invalid && this.afterValidation
+                        }
+                    }
+                }
+            }
+        },
+        mounted: function () {
+            if (categories) {
+                this.categories = categories
+            }
+            if (image) {
+                this.image.id = image.id
+                this.image.name = image.name
+                this.image.description = image.description
+                this.image.showImage = image.showImage
+                this.image.fileUrl = image.fileUrl
+                this.image.type = image.type
+                this.image.width = image.width
+                this.image.height = image.height
+                this.image.tag = image.tag
+                this.image.url = images.url
+            }
+        }
+    })
+
+    function before() {
+        $('button[type=submit]').button('loading');
+    }
+
+    function after() {
+        $('button[type=submit]').button('reset');
+    }
+
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+
+    $("#keys").select2({
+        tags: true,
+        tokenSeparators: ['，', ''],
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

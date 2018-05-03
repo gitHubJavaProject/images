@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <script src="/vendor/AjaxFileUploader/ajaxfileupload.js"></script>
+    <script src="/vendor/AjaxFileUploader/formUtil.js"></script>
+    <meta charset="UTF-8"/>
+    <title>个人中心</title>
+    <link rel="stylesheet" href="/css/front/application.css"/>
+    <link rel="stylesheet" href="/vendor/AjaxFileUploader/ajaxfileupload.css"/>
+    <style>
+
+        body {
+            padding-top: 60px;
+            background: #f6f6f6;
+        }
+
+        .container-fluid {
+            padding-left: 0px;
+            padding-right: 0px;
+            min-width: 1200px;
+        }
+
+        .user-myself-bg {
+            background: url(/images/user-myself-bg.png) no-repeat;
+            background-size: cover;
+            min-width: 1200px;
+            height: 189px;
+        }
+
+        .user-myself-bg .user-header {
+            height: 189px;
+            padding-top: 40px;
+        }
+
+        .w1200 {
+            width: 1200px;
+            margin: 0px auto;
+        }
+
+        .clearfix::after {
+            display: block;
+            height: 0px;
+            content: "";
+            font-size: 0px;
+            visibility: hidden;
+            clear: both;
+        }
+
+        .user-header .user-box {
+            position: relative;
+        }
+
+        .user-header .user-img {
+            width: 92px;
+            height: 92px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .user-header .user-resume {
+            margin-left: 20px;
+            padding-top: 16px;
+        }
+
+        .user-header .user-resume p {
+            font-size: 14px;
+            padding-bottom: 4px;
+            margin-bottom: 0px;
+        }
+
+        .user-header .user-info {
+            margin-top: 28px;
+        }
+
+        .fl {
+            float: left;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .sidenav-list {
+            padding-left: 20px;
+            padding-right: 20px;
+            margin: 0;
+            position: relative;
+            list-style: none;
+            width: 148px;
+        }
+
+        .sidenav-list-item {
+            height: auto;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 8px;
+        }
+
+        .sidenav-list-item a {
+            text-decoration-line: none;
+        }
+
+        .sidenav-list-item .glyphicon {
+
+        }
+
+        .sidenav-list-item-content {
+            border-radius: 4px;
+            width: 108px;
+            min-height: 40px;
+            padding: 4px 16px;
+            transition: padding .4s cubic-bezier(.25, .8, .25, 1);
+            will-change: padding;
+            color: #888;
+        }
+
+        .sidenav-list-item-content:hover {
+            background-image: linear-gradient(to right, rgb(34, 244, 138), rgb(16, 197, 91));
+            color: #fff;
+        }
+
+        .sidenav-list-item-action {
+            background-image: linear-gradient(to right, rgb(34, 244, 138), rgb(16, 197, 91));
+            color: #fff;
+        }
+
+        .sidenav-list-item-text {
+            line-height: 32px;
+            font-weight: 400;
+        }
+
+        .side-col-wrapper {
+            height: 100%;
+            width: 148px;
+            padding-top: 20px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            background: #f6f6f6;
+            z-index: 1;
+        }
+
+        .main-div-wrapper {
+            width: 100%;
+            padding-left: 148px;
+            padding-top: 10px;
+            height: auto;
+            background: #fff;
+        }
+
+        .btn-default-myself {
+            background: #fff;
+            border: 1px solid #fafafa;
+        }
+
+        .btn-primary-myself {
+            background-image: linear-gradient(to right, rgb(34, 244, 138), rgb(16, 197, 91));
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
+        .btn-primary-myself:hover {
+            color: #fff;
+        }
+
+        .show-image .file-input {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 140px;
+            height: 140px;
+            opacity: 0.0;
+            cursor: pointer;
+        }
+
+        .show-image {
+            position: relative;
+        }
+
+        .favorite-main .col-md-3 .favorite-list {
+            position: relative;
+        }
+
+        .favorite-list {
+            width: 240px;
+            height: 320px;
+            overflow: hidden;
+            margin: 5px auto;
+            padding: 10px 0 0 10px;
+        }
+
+        .favorite-add {
+            background-color: #f6fff9;
+        }
+
+        .favorite-list:hover {
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+        }
+
+        .favorite-add .create-btn {
+            display: block;
+            width: 220px;
+            height: 300px;
+            text-align: center;
+            font-size: 14px;
+            color: #a0a4a1;
+            border: 1px dashed #10c55b;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .favorite-add .create-btn i {
+            display: block;
+            margin: 110px auto 16px;
+            width: 54px;
+            height: 53px;
+            background: url(/images/favorite-icon.png) -115px 0 no-repeat;
+        }
+
+        .favorite-header .fav-title {
+            font-size: 16px;
+            color: #666;
+            font-weight: 700;
+            margin-left: 20px;
+        }
+
+        .favorite-list .fav-modify {
+            position: absolute;
+            top: -56px;
+            right: 20px;
+            z-index: 3;
+            background: url(/images/common.png) -113px -54px no-repeat;
+            display: block;
+            width: 54px;
+            height: 54px;
+            -webkit-transform: scale(.1);
+            -ms-transform: scale(.1);
+            transform: scale(.1);
+            -webkit-transition: -webkit-transform .25s;
+            transition: -webkit-transform .25s;
+            transition: transform .25s;
+            transition: transform .25s, -webkit-transform .25s;
+        }
+
+        .favorite-list:hover .fav-modify {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 3;
+            background: url(/images/common.png) -113px -54px no-repeat;
+            display: block;
+            width: 54px;
+            height: 54px;
+            -webkit-transform: scale(1);
+            -ms-transform: scale(1);
+            transform: scale(1);
+            -webkit-transition: -webkit-transform .25s;
+            transition: -webkit-transform .25s;
+            transition: transform .25s;
+            transition: transform .25s, -webkit-transform .25s;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .favorite-list .fav-modify:hover {
+            background: url(/images/common.png) -113px -110px no-repeat;
+        }
+
+        .favorite-list .fav-box {
+            position: relative;
+            display: block;
+        }
+
+        .favorite-list .box-cover-ckg {
+            margin-bottom: 10px;
+        }
+
+        .favorite-list .box-cover {
+            margin-right: 5px;
+        }
+
+        .favorite-list .box-title {
+            width: 220px;
+            height: 70px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, .25)), to(transparent));
+            background: -webkit-linear-gradient(top, rgba(0, 0, 0, .25), transparent);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, .25), transparent);
+            padding: 12px;
+            line-height: 1.6;
+        }
+
+        .favorite-list .box-title em {
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .favorite-list .box-title strong {
+            font-size: 18px;
+            color: #fff;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<head th:replace="_shared/front/header :: header"></head>
+<div id="app" class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-myself-bg">
+                <div class="w1200 user-header clearfix">
+                    <div class="user-box fl">
+                        <div class="user-img">
+                            <img width="86" height="86" v-bind:src="'/file/show?path='+user.header"/>
+                        </div>
+                    </div>
+                    <div class="user-resume fl"><p class="user-id" th:text="@{'登录名：' + ${loginUser.userName}}"></p>
+                        <p class="user-name" v-html="'昵称：' + user.name"><span class="vip-info"></span></p>
+                        <p><span th:text="@{'注册于：' + ${#dates.format(loginUser.createDate, 'yyyy/MM/dd')}}"></span></p>
+                    </div>
+                    <div class="user-info fr">
+                        <a href="#"><p><span>收藏</span><em th:text="${countFav}">1</em></p></a>
+                        <a href="#"><p><span>作品</span><em th:text="${countImg}">0</em></p></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="position: relative">
+        <div class="col-md-4 side-col-wrapper">
+            <ul class="sidenav-list">
+                <li class="sidenav-list-item" v-on:click="clickType(1)">
+                    <a href="#">
+                        <div v-bind:class="getLiType(1)" class="sidenav-list-item-content">
+                            <span class="glyphicon glyphicon-user"></span>
+                            <span class="sidenav-list-item-text">个人中心</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="sidenav-list-item" v-on:click="clickType(2)">
+                    <a href="#">
+                        <div v-bind:class="getLiType(2)" class="sidenav-list-item-content">
+                            <span class="glyphicon glyphicon-upload"></span>
+                            <span class="sidenav-list-item-text">我的上传</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="sidenav-list-item" v-on:click="clickType(3)">
+                    <a href="#">
+                        <div v-bind:class="getLiType(3)" class="sidenav-list-item-content">
+                            <span class="glyphicon glyphicon-folder-close"></span>
+                            <span class="sidenav-list-item-text">我的收藏</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8 main-div-wrapper">
+            <div v-if="liType===1">
+                <form style="margin:10px;width:300px;">
+                    <div class="form-group">
+                        <label for="name" class="control-label">昵称</label>
+                        <input type="text" class="form-control" id="name" placeholder="昵称" name="name"
+                               v-model="user.name"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd" class="control-label">密码</label>
+                        <input type="password" class="form-control" id="pwd" placeholder="密码" name="pwd"
+                               v-model="user.pwd"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">头像图片*</label>
+                        <div class="show-image">
+                            <a v-bind:href="'/file/show?path='+user.header" target="_blank">
+                                <img v-bind:src="'/file/show?path='+user.header" alt=""
+                                     style="width:140px;height:140px;background: #ddd;" class="img-thumbnail"/>
+                            </a>
+                            <input type="file" name="file" class="file-input" id="inputFileId"
+                                   onchange="headerFileUpload()"/>
+                        </div>
+                    </div>
+                    <button type="button" v-on:click="updateUser" class="btn btn-primary-myself" id="submitId" data-loading-text="保存中">保存</button>
+                </form>
+            </div>
+            <div v-if="liType===2">
+                <table class="table table-hover">
+                    <thead>
+                    <th>名称</th>
+                    <th>预览图</th>
+                    <th class="text-center">操作</th>
+                    </thead>
+                    <tbody>
+                    <tr v-for="image in images">
+                        <td v-html="image.name"></td>
+                        <td>
+                            <a v-bind:href="'/file/show?path='+image.showImage" target="_blank">
+                                <img v-bind:src="'/file/show?path='+image.showImage" style="width:28px;height:32px;"/>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-link" href="#">编辑</a>
+                            <a class="btn btn-link" href="#">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li>
+                            <a href="#" aria-label="Previous" v-on:click="getImages(page-1,size,name)">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li v-for="p in pages" v-bind:class="{'active': p==page}">
+                            <a href="#" v-on:click="getImages(p,size,name)" v-html="p"></a>
+                        </li>
+                        <li>
+                            <a href="#" aria-label="Next"
+                               v-on:click="getImages(page+1&gt;pages.length?pages.length:page+1,size,name)">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div v-if="liType===3">
+                <div class="row">
+                    <div class="col-md-12 favorite-header">
+                        <a href="#" class="fav-title">
+                            我的收藏夹
+                            <em v-html="'('+favCount+')'"></em>
+                        </a>
+                    </div>
+                </div>
+                <div class="row favorite-main">
+                    <div class="col-md-3">
+                        <div class="favorite-list favorite-add">
+                            <a class="create-btn" href="#" v-on:click="createFavorite">
+                                <i></i>
+                                创建收藏夹
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3" v-for="fav in favorites">
+                        <div class="favorite-list">
+                            <a href="#" class="fav-modify" v-on:click="updateFavorite(fav)"></a>
+                            <a v-bind:href="'/front/favorites/'+fav.id" class="fav-box" target="_blank">
+                                <span class="fl box-cover-ckg">
+                                    <img v-bind:src="'/file/show?path='+fav.url" width="220px" height="300px"/>
+                                </span>
+                                <!-- <span class="fl box-cover">
+                                     <img src="/images/common.png" width="70px" height="70px"/>
+                                 </span>
+                                 <span class="fl box-cover">
+                                     <img src="/images/common.png" width="70px" height="70px"/>
+                                 </span>
+                                 <span class="fl box-cover">
+                                     <img src="/images/common.png" width="70px" height="70px"/>
+                                 </span>-->
+                                <span class="box-title">
+                                    <!--<em>ss</em>-->
+                                    <br/>
+                                    <strong v-html="fav.name"></strong>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-left: 15px;">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li>
+                                <a href="#" aria-label="Previous" v-on:click="getFavorites(favPage-1,favSize)">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li v-for="p in favPages" v-bind:class="{'active': p==favPage}">
+                                <a href="#" v-on:click="getFavorites(p,favSize)" v-html="p"></a>
+                            </li>
+                            <li>
+                                <a href="#" aria-label="Next"
+                                   v-on:click="getFavorites(favPage+1&gt;favPages.length?favPages.length:favPage+1,favSize)">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="newFavModalId">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">创建收藏夹</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" v-on:submit.present="addFav">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">名称*</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" placeholder="名称" v-model="favorite.name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" placeholder="描述"
+                                          v-model="favorite.description"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">封面图片</label>
+                            <div class="show-image col-sm-10">
+                                <a v-bind:href="'/file/show?path='+favorite.url" target="_blank">
+                                    <img v-bind:src="'/file/show?path='+favorite.url" alt=""
+                                         style="width:140px;height:140px;background: #ddd;" class="img-thumbnail"/>
+                                </a>
+                                <input style="left:15px;" type="file" name="file" class="file-input" id="inputFileId1"
+                                       onchange="favoriteFileUpload()"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary-myself">保存</button>
+                                <button type="button" class="btn btn-default-myself" data-dismiss="modal">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="_shared/front/modaler :: modaler"></div>
+<div th:replace="_shared/front/footer :: footer"></div>
+<section th:replace="_shared/foot :: foot"></section>
+<script src="/js/front/application.js"></script>
+<script src="/vendor/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.loginUser = /*[[${loginUser}]]*/ null
+    /*window.favorites = /!*[[${favorites}]]*!/ null*/
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    function favoriteFileUpload() {
+        var self = app
+        var inputId = "inputFileId1"
+        var type = "favoriteFile"
+        self.fileUpload(inputId, type, function (url) {
+            self.favorite.url = url
+        })
+    }
+
+    function headerFileUpload() {
+        var self = app
+        var inputId = "inputFileId"
+        var type = "headerFile"
+        self.fileUpload(inputId, type, function (url) {
+            self.user.header = url
+        })
+    }
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            page: 1,
+            size: 1,
+            name: '',
+            count: null,
+            liType: 3,
+            user: {
+                id: null,
+                name: null,
+                pwd: null,
+                header: null,
+            },
+            images: [],
+            favorites: [],
+            favPage: 1,
+            favSize: 3,
+            favCount: null,
+            favorite: {
+                id: null,
+                name: null,
+                description: null,
+                url: null
+            }
+        },
+        computed: {
+            pages: function () {
+                var pages = []
+                var c = this.count % this.size
+                if (c > 0) {
+                    c = Math.ceil(this.count / this.size)
+                } else {
+                    c = this.count / this.size
+                }
+                for (var i = 0; i < c; i++) {
+                    pages.push(i + 1)
+                }
+                return pages
+            },
+            favPages: function () {
+                var favPages = []
+                var c = this.favCount % this.favSize
+                if (c > 0) {
+                    c = Math.ceil(this.favCount / this.favSize)
+                } else {
+                    c = this.favCount / this.favSize
+                }
+                for (var i = 0; i < c; i++) {
+                    favPages.push(i + 1)
+                }
+                return favPages
+            },
+        },
+        methods: {
+            addFav: function () {
+                var self = this
+                if (self.favorite.name) {
+                    if (self.favorite.id) {
+                        $.ajax({
+                            url: '/front/favorites/' + self.favorite.id,
+                            type: 'put',
+                            data: $.param(self.favorite),
+                            success: function (result) {
+                                self.alert(result, 204, function () {
+                                    self.favorites.forEach(function (value) {
+                                        if (value.id == self.favorite.id) {
+                                            value.name = self.favorite.name
+                                            value.description = self.favorite.description
+                                            value.url = self.favorite.url
+                                        }
+                                    })
+                                    self.favorite.id = null
+                                    self.favorite.name = null
+                                    self.favorite.description = null
+                                    self.favorite.url = null
+                                    $("#newFavModalId").modal('hide')
+                                })
+                            },
+                            error: function (res) {
+                                resErrorMsg(res)
+                            }
+                        })
+                    } else {
+                        $.ajax({
+                            url: '/front/favorites',
+                            type: 'post',
+                            data: $.param(self.favorite),
+                            success: function (result) {
+                                self.alert(result, 201, function () {
+                                    self.favorites.push(result.favorite)
+                                    self.favorite.name = null
+                                    self.favorite.description = null
+                                    self.favorite.url = null
+                                    $("#newFavModalId").modal('hide')
+                                })
+                            },
+                            error: function (res) {
+                                resErrorMsg(res)
+                            }
+                        })
+                    }
+                } else {
+                    swal({
+                        text: '名称不能空！',
+                        button: '确定',
+                        icon: 'warning'
+                    })
+                }
+            },
+            alert: function (result, code, callBack) {
+                if (result.code == code) {
+                    swal({
+                        text: result.msg,
+                        button: '确定',
+                        icon: result.icon
+                    }).then(callBack)
+                } else {
+                    swal({
+                        text: result.msg,
+                        button: '确定',
+                        icon: result.icon
+                    })
+                }
+            },
+            updateUser: function () {
+                var self = this
+                if (this.user.name && this.user.pwd) {
+                    $('#submitId').button('loading')
+                    $.ajax({
+                        method: 'put',
+                        url: '/front/update/' + self.user.id,
+                        data: $.param(self.user),
+                        dataType: 'json',
+                        success: function (result) {
+                            $('#submitId').button('reset')
+                            swal({
+                                text: result.msg,
+                                button: '确认',
+                                icon: result.icon
+                            })
+                        },
+                        error: function (res) {
+                            $('#submitId').button('reset')
+                            resErrorMsg(res)
+                        }
+                    })
+                } else {
+                    swal({
+                        text: '昵称或密码不能空！',
+                        button: '确认',
+                        icon: 'warning'
+                    })
+                }
+            },
+            updateFavorite: function (fav) {
+                this.favorite.id = fav.id
+                this.favorite.name = fav.name
+                this.favorite.description = fav.description
+                this.favorite.url = fav.url
+                $("#newFavModalId").modal('show')
+            },
+            createFavorite: function () {
+                this.favorite.id = null
+                this.favorite.name = null
+                this.favorite.description = null
+                this.favorite.url = null
+                $("#newFavModalId").modal('show')
+            },
+            fileUpload: function (inputId, type, callBack) {
+                var self = this
+                var size = getFileSize(document.getElementById(inputId))
+                if (size > 0 && size < 10485760) {
+                    $.ajaxFileUpload({
+                        type: 'post',
+                        secureuri: false,
+                        url: '/file/upload',
+                        dataType: 'json',
+                        data: 'type=' + type,
+                        fileElementId: inputId,
+                        success: function (data) {
+                            if (data.code === 204) {
+                                swal({
+                                    text: data.msg,
+                                    button: '确定',
+                                    icon: 'success'
+                                }).then(function () {
+                                    callBack(data.url)
+                                })
+                            } else {
+                                swal({
+                                    text: data.msg,
+                                    button: '确定',
+                                    icon: 'warning'
+                                })
+                            }
+                        },
+                        error: function (res) {
+                            resErrorMsg(res)
+                        }
+                    })
+                } else {
+                    if (size > 0) {
+                        swal({
+                            text: "图片大小不超过10M!",
+                            button: '确定',
+                            icon: 'warning'
+                        })
+                    }
+                }
+            },
+            getLiType: function (type) {
+                if (type === this.liType) {
+                    return 'sidenav-list-item-action'
+                }
+            },
+            clickType: function (type) {
+                this.liType = type
+                if (type == 2) {
+                    this.getImages(this.page, this.size, this.name)
+                }
+            },
+            getImages: function (page, size, name) {
+                var self = this
+                $.ajax({
+                    url: '/front/lists?page=' + page + '&size=' + size + '&name=' + name,
+                    type: 'get',
+                    success: function (result) {
+                        self.page = result.page
+                        self.size = result.size
+                        self.name = result.name
+                        self.images = result.images
+                        self.count = result.count
+
+                    },
+                    error: function (res) {
+                        resErrorMsg(res)
+                    }
+                })
+            },
+            getFavorites: function (p, s) {
+                this.initFavorites(p, s)
+            },
+            initFavorites: function (p, s) {
+                $.get('/front/favorites?page=' + p + '&size=' + s,function (result) {
+                    app.favorites = result.favorites
+                    app.favPage = result.page
+                    app.favSize = result.size
+                    app.favCount = result.count
+                })
+            }
+        },
+        mounted: function () {
+            this.initFavorites(this.favPage, this.favSize)
+            if (loginUser) {
+                this.user.id = loginUser.id
+                this.user.name = loginUser.name
+                this.user.pwd = loginUser.pwd
+                this.user.header = loginUser.header
+            }
+        }
+    })
+
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

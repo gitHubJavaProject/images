@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.img.images.mapper.ImageFavoriteMapper">
+    <resultMap id="BaseResultMap" type="com.img.images.model.ImageFavorite">
+        <id column="id" property="id"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="favorite_id" property="favoriteId"/>
+        <result column="image_id" property="imageId"/>
+        <result column="favorite_id" property="favoriteId"/>
+    </resultMap>
+    
+    <select id="findByFavoriteId" resultMap="BaseResultMap">
+        SELECT
+        i.*
+        FROM
+        image i
+        left JOIN
+        image_favorite f
+        on i.id = f.image_id
+        where f.favorite_id=#{id}
+    </select>
+</mapper>

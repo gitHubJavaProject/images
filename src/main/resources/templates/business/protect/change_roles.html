@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="_shared/head :: head"></head>
+    <script src="/vendor/vuelidate/vuelidate.min.js"></script>
+    <script src="/vendor/vuelidate/validators.min.js"></script>
+    <title>创建用户</title>
+    <link rel="stylesheet" href="/css/business/protect/application.css"/>
+    <link rel="stylesheet" href="/vendor/plugins/bootstrap-table/bootstrap-table.min.css"/>
+    <style>
+        .form-row {
+            margin: 0px auto 15px auto;
+        }
+
+        .form-group .help-block {
+            display: none;
+        }
+
+        .form-group .help-block-show {
+            display: block;
+        }
+
+        .form-group .form-control-feedback {
+            pointer-events: all;
+            position: absolute;
+            right: 0px;
+            top: 24px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .row-main .col-md-3 {
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+            margin-top: 20px;
+            height:400px;
+            min-width: 260px;
+            overFlow-x: hidden;
+            overFlow-y: scroll;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1050px) {
+            .row-main .col-first {
+                display: none;
+            }
+        }
+
+        .row-main h4 {
+            background: #fafafa;
+        }
+
+        .row-main .col-md-2 {
+            height: 400px;
+            line-height: 400px;
+            text-align: center;
+        }
+
+        .row-main .col-md-2 .glyphicon {
+            font-size: xx-large;
+        }
+
+        .row-main .col-md-2 .glyphicon-forward {
+            position: relative;
+            top: 60px;
+            right: 20px;
+            cursor: pointer;
+        }
+        .row-main .col-md-2 .glyphicon-backward {
+            position: relative;
+            top: 0px;
+            left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<head th:replace="_shared/business/protect/header :: header"></head>
+<div th:replace="_shared/business/protect/sidenav :: sidenav"></div>
+<div id="app" class="container-fluid">
+    <div class="row" style="margin: 10px auto 0px auto;">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8" style="padding: 0px 0px;">
+            <h3>分配角色 <button class="btn btn-primary" id="saveBtn" v-on:click="saveChange" data-loading-text="保存中">保存</button></h3>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="row row-main">
+        <div class="col-md-2 col-first">
+        </div>
+        <div class="col-md-3">
+            <h4 class="text-center">我的角色</h4>
+            <table class="table table-hover table-roles-left">
+                <tbody>
+                <tr v-for="r in myRoles">
+                    <td class="active" v-on:click="selectRole(r,$event,'left')" v-html="r.name"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2">
+            <span class="glyphicon glyphicon-backward" v-on:click="leftMove"></span>
+            <span class="glyphicon glyphicon-forward" v-on:click="rightMove"></span>
+        </div>
+        <div class="col-md-3">
+            <h4 class="text-center">角色池</h4>
+            <table class="table table-hover table-roles-right">
+                <tbody>
+                <tr v-for="r in otherRoles">
+                    <td class="active" v-on:click="selectRole(r,$event,'right')" v-html="r.name"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<section th:replace="_shared/foot :: foot"></section>
+<section th:replace="_shared/business/protect/foot :: foot"></section>
+<script src="/vendor/sweetalert.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.myRoles = /*[[${myRoles}]]*/ null
+    window.allRoles = /*[[${allRoles}]]*/ null
+    window.userId = /*[[${userId}]]*/ null
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    var app = new Vue({
+        el: '#app',
+        mixins: [vuelidate.validationMixin],
+        data: {
+            moveState: null,
+            role: {
+                id:null,
+                name: null
+            },
+            otherRoles: [],
+            myRoles: [],
+            allRoles: []
+        },
+        methods: {
+            clearSelect: function (self) {
+                var table_roles = $($('.table-roles-'+self.moveState).children()[0]).children()
+                this.forElment(table_roles);
+            },
+            leftMove: function () {
+                var self = this
+                if (self.role.id && self.moveState == 'right') {
+                    self.otherRoles.forEach(function (value, n) {
+                        if (value.id == self.role.id) {
+                            self.otherRoles.splice(n, 1)
+                            this.myRoles.push(value)
+                        }
+                    })
+                    self.role.id = null
+                    self.role.name = null
+                    self.clearSelect(self)
+                    self.moveState = null
+                }
+            },
+            rightMove: function () {
+                var self = this
+                if (self.role.id && self.moveState == 'left') {
+                    self.myRoles.forEach(function (value, n) {
+                        if (value.id == self.role.id) {
+                            self.myRoles.splice(n, 1)
+                            self.otherRoles.push(value)
+                        }
+                    })
+                    self.role.id = null
+                    self.role.name = null
+                    self.clearSelect(self)
+                    self.moveState = null
+                }
+            },
+            forElment: function (roleElments) {
+                for(var i = 0; i < roleElments.length; i++){
+                    $($(roleElments[i]).children()[0]).attr('class', 'active')
+                }
+            },
+            selectRole: function (r, event, type) {
+                var roleElments = $(event.srcElement).parent().parent().children()
+                this.forElment(roleElments);
+                $(event.srcElement).attr('class', 'info')
+                this.role.id = r.id
+                this.role.name = r.name
+                this.moveState = type
+            },
+            saveChange: function () {
+                var self = this
+                var params;
+                self.myRoles.forEach(function (value) {
+                    params += '&roles='+value.id
+                })
+                params = params.substring(1, params.length);
+                    before();
+                    $.ajax({
+                        method: 'put',
+                        url: '/business/p/users/'+userId+'/saveChange',
+                        data: params,
+                        dataType: 'json',
+                        success: function (result) {
+                            after();
+                            if (result.code == 204) {
+                                swal({
+                                    text: result.msg,
+                                    button: '确认',
+                                    icon: 'success'
+                                }).then(function () {
+                                    window.location.href = '/business/p/users/list';
+                                })
+                            } else {
+                                swal({
+                                    text: result.msg,
+                                    button: '确认',
+                                    icon: result.icon
+                                })
+                            }
+                        },
+                        error: function (res) {
+                            after();
+                            //console.log(res)
+                            resErrorMsg(res)
+                        }
+                    })
+            }
+        },
+        mounted: function () {
+            if (myRoles) {
+                this.myRoles = myRoles
+            }
+            if (allRoles) {
+                this.allRoles = allRoles
+            }
+            var myRolesStr = '#'
+            myRoles.forEach(function (value) {
+                myRolesStr += value.id + '#'
+            })
+            var self = this
+            allRoles.forEach(function (value) {
+                if (myRolesStr.indexOf('#'+value.id+'#') == -1) {
+                    self.otherRoles.push(value)
+                }
+            })
+        }
+    })
+
+    function before() {
+        $('#saveBtn').button('loading');
+    }
+
+    function after() {
+        $('#saveBtn').button('reset');
+    }
+    function resErrorMsg(res) {
+        if (res.status == 403) {
+            swal({
+                text: '没有权限！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 400) {
+            swal({
+                text: '参数类型不匹配！',
+                button: '确定',
+                icon: 'warning'
+            })
+        }
+        if (res.status == 500) {
+            swal({
+                text: '系统错误！',
+                button: '确定',
+                icon: 'error'
+            })
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>
