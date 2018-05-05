@@ -455,6 +455,7 @@
                     <thead>
                     <th>名称</th>
                     <th>预览图</th>
+                    <th>状态</th>
                     <th class="text-center">操作</th>
                     </thead>
                     <tbody>
@@ -465,9 +466,14 @@
                                 <img v-bind:src="'/file/show?path='+image.showImage" style="width:28px;height:32px;"/>
                             </a>
                         </td>
+                        <td v-html="getStatus(image)">
+                        </td>
                         <td class="text-center">
-                            <a class="btn btn-link" href="#" v-on:click="updateImage(image.id)">编辑</a>
-                            <a class="btn btn-link" href="#" v-on:click="delImage(image.id)">删除</a>
+                            <div v-if="image.status==1 || image.status==5">
+                                <a class="btn btn-link" href="#" v-on:click="updateImage(image.id)">编辑</a>
+                                <a class="btn btn-link" href="#" v-on:click="delImage(image.id)">删除</a>
+                                <a class="btn btn-link" href="#" v-on:click="submitImage(image.id)">提交</a>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -798,6 +804,53 @@
             },
         },
         methods: {
+            submitImage: function (id) {
+                $.ajax({
+                    url: '/front/images/'+id+'/toApproval',
+                    type: 'get',
+                    success: function (result) {
+                        if (result.code == 204) {
+                            swal({
+                                text: result.msg,
+                                button: '确定',
+                                icon: result.icon
+                            }).then(function () {
+                                app.images.forEach(function (value, n) {
+                                    if (value.id == id) {
+                                        value.status = 2
+                                    }
+                                })
+                            })
+                        } else {
+                            swal({
+                                text: result.msg,
+                                button: '确定',
+                                icon: result.icon
+                            })
+                        }
+                    },
+                    error: function (res) {
+                        resErrorMsg(res)
+                    }
+                })
+            },
+            getStatus: function (image) {
+                if (image.status == 1) {
+                    return '草稿'
+                }
+                if (image.status == 2) {
+                    return '待审核'
+                }
+                if (image.status == 3) {
+                    return '审核通过'
+                }
+                if (image.status == 4) {
+                    return '审核未通过'
+                }
+                if (image.status == 5) {
+                    return '退回修改'
+                }
+            },
             initImage: function () {
                 imgModal.image.id = null
                 imgModal.image.name = null

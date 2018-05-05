@@ -60,5 +60,9 @@ public class Image extends BaseModel{
      * 收藏量
      */
     private Long collectionNumber;
+    /**
+     * 状态
+     */
+    private Integer status;
 
 }

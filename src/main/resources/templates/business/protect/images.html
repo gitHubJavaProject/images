@@ -53,7 +53,8 @@
                     <th style="width: 50px;">预览图</th>
                     <th style="width: 50px;">作者</th>
                     <th style="width: 50px;">下载量</th>
-                    <th style="width: 100px;">操作</th>
+                    <th style="width: 70px">状态</th>
+                    <th style="width: 150px;">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,10 +69,14 @@
                     </td>
                     <td th:text="${image.userId}"></td>
                     <td th:text="${image.downloadNumber}"></td>
+                    <td th:text="${image.status==1?'草稿':image.status==2?'待审核':image.status==3?'审核通过'
+                    :image.status==4?'审核未通过':'退回修改'}"></td>
                     <td>
                         <a th:href="@{'/file/download/'+${image.id}+'?path='+${image.fileUrl}}" class="btn btn-link">下载</a>
-                        <button type="button" class="btn btn-danger" onclick="delImage(this);">删除</button>
-                        <span style="display: none;" th:text="${image.id}"></span>
+                        <button class="btn btn-primary btn-sm" th:onclick="@{'doApproval('+${image.id}+')'}">通过</button>
+                        <button class="btn btn-info btn-sm" th:onclick="@{'doNoApproval('+${image.id}+')'}">不通过</button>
+                        <button class="btn btn-default btn-sm" th:onclick="@{'goBackToUp('+${image.id}+')'}">退回</button>
+                        <button type="button" class="btn btn-danger btn-sm" th:onclick="@{'delImage('+${image.id}+')'}">删除</button>
                     </td>
                 </tr>
                 </tbody>
@@ -86,9 +91,88 @@
 <section th:replace="_shared/business/protect/foot :: foot"></section>
 <script type="text/javascript">
     /*<![CDATA[*/
-    function delImage(ths) {
-       var id =  $(ths).next().html()
-        console.log(id)
+    function doApproval(id) {
+        $.ajax({
+            url: '/business/p/images/doApproval/'+id,
+            type: 'patch',
+            success: function (result) {
+                if (result.code == 204) {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    }).then(function () {
+                        window.location.href = '/business/p/images/list'
+                    })
+                } else {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    })
+                }
+            },
+            error: function (res) {
+                resErrorMsg(res)
+            }
+        })
+    }
+    
+    function doNoApproval(id) {
+        $.ajax({
+            url: '/business/p/images/doNoApproval/'+id,
+            type: 'patch',
+            success: function (result) {
+                if (result.code == 204) {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    }).then(function () {
+                        window.location.href = '/business/p/images/list'
+                    })
+                } else {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    })
+                }
+            },
+            error: function (res) {
+                resErrorMsg(res)
+            }
+        })
+    }
+    
+    function goBackToUp(id) {
+        $.ajax({
+            url: '/business/p/images/goBackToUp/'+id,
+            type: 'patch',
+            success: function (result) {
+                if (result.code == 204) {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    }).then(function () {
+                        window.location.href = '/business/p/images/list'
+                    })
+                } else {
+                    swal({
+                        text: result.msg,
+                        button: '确认',
+                        icon: result.icon
+                    })
+                }
+            },
+            error: function (res) {
+                resErrorMsg(res)
+            }
+        })
+    }
+
+    function delImage(id) {
         swal({
             title: '删除不可逆！',
             text: '确定删除?',
@@ -117,8 +201,6 @@
                         }
                     },
                     error: function (res) {
-                        //after();
-                        //console.log(res)
                         resErrorMsg(res)
                     }
                 })

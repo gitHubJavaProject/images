@@ -33,6 +33,9 @@ public class IndexController extends BaseController {
     @Autowired
     private FavoriteService favoriteService;
 
+    @Autowired
+    private ImageFavoriteService imageFavoriteService;
+
     @RequestMapping("index")
     public ModelAndView index(ModelAndView mv) {
         mv.setViewName("front/index");
@@ -113,5 +116,36 @@ public class IndexController extends BaseController {
         }
         imageService.delete(id);
         return R.ok(204, "删除成功！").put("icon", "success");
+    }
+
+    @RequestMapping("images/{id}/getFavCount")
+    public Object getFavCount(@PathVariable("id") Long id) {
+        return imageFavoriteService.getFavCount(id);
+    }
+
+    @RequestMapping("imageFavorites/del")
+    public R imageFavoritesDel(Long imageId, Long favoriteId) {
+        imageFavoriteService.delete(imageId, favoriteId);
+        return R.ok(204, "删除成功！");
+    }
+
+    @RequestMapping("imageFavorites/add")
+    public R imageFavoriteAdd(Long imageId, Long favoriteId) {
+        imageFavoriteService.save(imageId, favoriteId);
+        return R.ok(201, "添加成功！");
+    }
+
+    @RequestMapping("images/{id}/toApproval")
+    public R toApproval(@PathVariable("id") Long id) {
+        Image image = imageService.get(id);
+        if (null == image) {
+            return R.error(404, "无此条数据！").put("icon", "warning");
+        }
+        if (image.getStatus() != 1 && image.getStatus() != 5) {
+            return R.error(403, "当前状态不能提交！").put("icon", "warning");
+        }
+        image.setStatus(2);
+        imageService.update(image);
+        return R.ok(204, "提交成功！").put("icon", "warning");
     }
 }

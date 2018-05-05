@@ -11,6 +11,35 @@
     <result column="user_id" property="userId"/>
 </resultMap>
 
+    <resultMap id="FavAndCountImgResultMap" type="com.img.images.model.FavAndCountImg">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="count" property="count"/>
+    </resultMap>
+
+    <select id="findFavAndCountImgByUserId" resultMap="FavAndCountImgResultMap">
+        SELECT
+        f.id as id, f.name as `name`, count(i.image_id) as `count`
+        FROM
+        favorite f
+        left JOIN
+        image_favorite i
+        on f.id=i.favorite_id
+        where f.user_id=#{id}
+        group by f.id
+    </select>
+
+    <select id="findFavImgByImgId" resultMap="BaseResultMap">
+        SELECT
+        f.*
+        FROM
+        favorite f
+        left JOIN
+        image_favorite i
+        on f.id=i.favorite_id
+        where f.user_id=#{userId} and i.image_id=#{id}
+    </select>
+
     <insert id="save" parameterType="com.img.images.model.Favorite" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO
         favorite

@@ -9,8 +9,26 @@
         <result column="image_id" property="imageId"/>
         <result column="favorite_id" property="favoriteId"/>
     </resultMap>
-    
-    <select id="findByFavoriteId" resultMap="BaseResultMap">
+    <resultMap id="ImageResultMap" type="com.img.images.model.Image">
+        <id column="id" property="id" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="show_image" property="showImage" />
+        <result column="file_url" property="fileUrl" />
+        <result column="type" property="type" />
+        <result column="type_str" property="typeStr" />
+        <result column="tag" property="tag" />
+        <result column="keys" property="keys" />
+        <result column="size" property="size" />
+        <result column="width" property="width" />
+        <result column="height" property="height" />
+        <result column="user_id" property="userId" />
+        <result column="download_number" property="downloadNumber" />
+        <result column="collection_number" property="collectionNumber" />
+    </resultMap>
+    <select id="findByFavoriteId" resultMap="ImageResultMap">
         SELECT
         i.*
         FROM
@@ -20,4 +38,36 @@
         on i.id = f.image_id
         where f.favorite_id=#{id}
     </select>
+
+    <insert id="create">
+        INSERT
+        INTO
+        image_favorite
+        (
+        `create_date`,
+        image_id,
+        favorite_id
+        )
+        VALUES
+        (
+        now(),
+        #{imageId},
+        #{favoriteId}
+        )
+    </insert>
+
+    <select id="getFavCount" resultType="int">
+        SELECT
+        count(id)
+        FROM
+        image_favorite
+        where image_id=#{id}
+    </select>
+
+    <delete id="deleteByImgIdAndFavId" >
+        DELETE
+        FROM
+        image_favorite
+        where image_id=#{imageId} and favorite_id=#{favoriteId}
+    </delete>
 </mapper>

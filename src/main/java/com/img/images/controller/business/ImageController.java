@@ -190,4 +190,46 @@ public class ImageController {
         return dateFormat.format(new Date());
     }
 
+
+    @PatchMapping("doApproval/{id}")
+    public R doApproval(@PathVariable("id") Long id) {
+        Image image = imageService.get(id);
+        if (null == image) {
+            return R.error(404, "无此条数据！").put("icon", "warning");
+        }
+        if (image.getStatus() != 2) {
+            return R.error(403, "当前状态不能审核！").put("icon", "warning");
+        }
+        image.setStatus(3);
+        imageService.update(image);
+        return R.ok(204, "审核成功！").put("icon", "success");
+    }
+
+    @PatchMapping("doNoApproval/{id}")
+    public R doNoApproval(@PathVariable("id") Long id) {
+        Image image = imageService.get(id);
+        if (null == image) {
+            return R.error(404, "无此条数据！").put("icon", "warning");
+        }
+        if (image.getStatus() != 2) {
+            return R.error(403, "当前状态不能审核！").put("icon", "warning");
+        }
+        image.setStatus(4);
+        imageService.update(image);
+        return R.ok(204, "审核成功！").put("icon", "success");
+    }
+
+    @PatchMapping("goBackToUp/{id}")
+    public R goBackToUp(@PathVariable("id") Long id) {
+        Image image = imageService.get(id);
+        if (null == image) {
+            return R.error(404, "无此条数据！").put("icon", "warning");
+        }
+        if (image.getStatus() != 2) {
+            return R.error(403, "当前状态不能退回！").put("icon", "warning");
+        }
+        image.setStatus(5);
+        imageService.update(image);
+        return R.ok(204, "退回成功！").put("icon", "success");
+    }
 }

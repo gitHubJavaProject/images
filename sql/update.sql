@@ -128,3 +128,7 @@ ALTER TABLE `images`.`favorite`
   ALTER TABLE `images`.`user`
   ADD COLUMN `header` VARCHAR(255) NULL AFTER `status`;
 
+  ALTER TABLE `images`.`image`
+  ADD COLUMN `status` INT(11) NULL AFTER `height`;
+
+

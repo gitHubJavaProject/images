@@ -20,6 +20,7 @@
             overflow: hidden;
             height: 320px;
         }
+
         .favorite-cover .cover-bg1 {
             position: absolute;
             top: 50px;
@@ -28,6 +29,7 @@
             right: 0;
             z-index: -1;
         }
+
         .favorite-cover .w1200 {
             position: relative;
         }
@@ -36,18 +38,21 @@
             width: 1200px;
             margin: 0 auto;
         }
+
         .fl {
             float: left;
         }
+
         .favorite-cover .cover-left {
             width: 260px;
         }
+
         .favorite-cover .cover-bg1::after {
             content: '';
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(hsla(0,0%,100%,.8),hsla(0,0%,100%,.9) 50%,#fff);
+            background: linear-gradient(hsla(0, 0%, 100%, .8), hsla(0, 0%, 100%, .9) 50%, #fff);
             top: 0;
             left: 0;
         }
@@ -55,6 +60,7 @@
         .favorite-cover .cover-userinfo {
             margin-bottom: 30px;
         }
+
         .favorite-cover .cover-info {
             position: absolute;
             bottom: 0;
@@ -63,6 +69,7 @@
         .favorite-cover .cover-info {
             font-size: 12px;
         }
+
         .favorite-cover .cover-title {
             color: #666;
             margin-bottom: 44px;
@@ -70,17 +77,21 @@
             font-weight: 400;
             font-size: 36px;
         }
+
         .favorite-cover .cover-userinfo p {
             color: #666;
         }
+
         .favorite-cover .cover-info span {
             color: #666;
         }
+
         a {
             color: #666;
             text-decoration: none;
             cursor: pointer;
         }
+
         .favorite-cover .cover-userinfo .user-img {
             border: 0;
             display: inline-block;
@@ -96,6 +107,7 @@
             bottom: 0;
             font-size: 12px;
         }
+
         .fav-num {
             font-size: 16px;
             color: #666;
@@ -109,6 +121,311 @@
             vertical-align: sub;
             margin-right: 5px;
         }
+
+        .tupian-border {
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+            background: #fff;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .tupian-back {
+            background: #888;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tupian-border .tupian-back > a {
+            display: block;
+        }
+
+        .tupian-back .card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .tupian-back .card-handle {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+        }
+
+        .tupian-border:hover .card-handle {
+            display: block;
+        }
+
+        @media screen and (max-width: 1300px) {
+            .tupian-back .card-handle .handle-fav {
+                width: 32px;
+                height: 32px;
+                padding-top: 5px;
+            }
+        }
+
+        .tupian-back .card-handle .handle-fav {
+            position: absolute;
+            top: 30px;
+            right: 45px;
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            padding-top: 9px;
+        }
+
+        .tupian-back .card-handle .handle-dum span {
+            color: #fff;
+        }
+
+        @media screen and (max-width: 1300px) {
+            .tupian-back .card-handle .handle-dum {
+                margin: -23px 0 0 -82px;
+                width: 164px;
+            }
+        }
+
+        .tupian-back .card-handle .handle-dum {
+            position: absolute;
+            bottom: 72px;
+            left: 50%;
+            margin: -23px 0 0 -97px;
+            width: 195px;
+            height: 46px;
+            line-height: 46px;
+        }
+
+        .qt-btn {
+            width: 200px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .btn-green-linear {
+            background-image: -webkit-gradient(linear, left top, right top, from(#17e66c), to(#10c55b));
+            background-image: -webkit-linear-gradient(left, #17e66c, #10c55b);
+            background-image: linear-gradient(to right, #17e66c, #10c55b);
+            FILTER: progid: DXImageTransform . Microsoft . Gradient(gradientType = 1, startColorStr = #17e66c, endColorStr = #10c55b);
+            border: 0;
+        }
+
+        .tupian-border .card-title {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: flex;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            overflow: hidden;
+            color: #666;
+        }
+
+        .tupian-border .card-title {
+            margin: 0px;
+        }
+
+        .tupian-border .card-title .title-text {
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tupian-border .card-intro {
+            display: none;
+        }
+
+        .tupian-border:hover .card-intro {
+            display: block;
+        }
+
+        .tupian-border:hover .card-title-text {
+            display: none;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary-myself {
+            background-image: linear-gradient(to right, rgb(34, 244, 138), rgb(16, 197, 91));
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
+        .btn-primary-myself:hover {
+            color: #fff;
+        }
+
+        .modal-dialog {
+            width: 500px;
+        }
+
+        .modal-dialog .modal-content .modal-body {
+            height: 400px;
+        }
+
+        .model-favirite-all .favirite-box {
+            margin-bottom: 2px;
+            margin-left: 20px;
+            height: 350px;
+            overflow-y: auto;
+        }
+
+        ul {
+            list-style: none;
+            border: 0;
+            font: inherit;
+            vertical-align: baseline;
+            text-align: left;
+            font-family: "Microsoft YaHei",arial;
+            margin: 0;
+            padding: 0;
+        }
+
+        .model-favirite-all .favirite-box .fav-list:first-child {
+            margin: 0;
+        }
+        .model-favirite-all .favirite-box .fav-list {
+            width: 420px;
+            height: 80px;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        body[version="v1.0"] li {
+            list-style: none;
+        }
+
+        .model-favirite-all .favirite-box .fav-list>a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 18px 0 0 18px;
+        }
+        a {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a:hover {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .model-favirite-all .favirite-box .fav-list .bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .model-favirite-all .favirite-box .fav-list .h3 {
+            font-size: 12px;
+            color: #dadada;
+            margin-bottom: 6px;
+            z-index: 1;
+            position: relative;
+            margin-top: 0px;
+        }
+
+        .model-favirite-all .favirite-box .fav-list.on .bg::after {
+            background-color: rgba(16,197,91,.53);
+        }
+        .model-favirite-all .favirite-box .fav-list .bg::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,.3);
+            top: 0;
+            left: 0;
+        }
+
+        .model-favirite-all .favirite-box .fav-list .h3 span {
+            color: #dadada;
+        }
+
+        .model-favirite-all .favirite-box .fav-list .h1 {
+            position: relative;
+            font-size: 20px;
+            color: #fff;
+            font-weight: 700;
+            z-index: 1;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .model-favirite-all .favirite-box .fav-status {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            top: 0;
+            right: 0;
+            z-index: 5;
+            text-align: center;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .model-favirite-all .favirite-box .fav-status .icon {
+            display: block;
+            width: 32px;
+            height: 34px;
+            margin: 13px auto 0;
+            vertical-align: middle;
+            font-size: 32px;
+            color: #fff;
+        }
+        .icon {
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .fav-status-init {
+            display: block;
+        }
+
+        .fav-status-mouse {
+            display: none;
+        }
+
+        .fav-list .fav-status:hover .fav-status-init {
+            display: none;
+        }
+
+        .fav-list .fav-status:hover .fav-status-mouse {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
@@ -119,22 +436,60 @@
              v-bind:style="'background: url(/file/show?path='+favorite.url+') 100%;background-size:cover;'"></div>
         <div class="w1200 clearfix">
             <div class="fl cover-left" style="width: 205px;">
-                <img v-bind:src="'/file/show?path='+favorite.url" width="165" height="220" /></div>
+                <img v-bind:src="'/file/show?path='+favorite.url" width="165" height="220"/></div>
             <div class="fl cover-right" style="width: 630px;height: 220px;">
                 <div class="clearfix cover-userinfo"><p class="cover-title">大家都会挖的哈的</p>
-                    <a href="http://www.58pic.com/member/36611892/favorPage" title="TA的个人主页" target="_blank" rel="nofollow">
+                    <a href="/front/myself" title="TA的个人主页" target="_blank"
+                       rel="nofollow">
                         <p class="fl">
-                            <img class="user-img" src="http://qzapp.qlogo.cn/qzapp/100414805/A959FB5C8E8EFF57CEF6B6F21D563CA0/100"
-                                                              width="32" height="32" alt=""/>追夢</p></a></div>
-                <p class="cover-info"><span><i class="icon-eye"></i>1</span><span><i
-                        class="icon-attention-num"></i>0</span><span><i class="icon-created-at"></i>2018-04-22 16:16:37</span>
+                            <img class="user-img" th:src="@{'/file/show?path='+${loginUser.header}}"
+                                 width="32" height="32" alt=""/>
+                            <span th:text="${loginUser.name}"></span>
+                        </p>
+                    </a>
+                </div>
+                <p class="cover-info"><span><span>创建时间：</span><span th:text="${#dates.format(loginUser.createDate, 'yyyy-MM-dd')}"></span></span>
                 </p></div>
 
         </div>
     </div>
-    <p class="w1200 fav-num"><i></i>1个作品</p>
+    <p class="w1200 fav-num" th:text="${#lists.size(images)+'个作品'}"></p>
+    <div class="row">
+        <div class="col-md-3" v-for="im in images">
+            <div class="tupian-border">
+                <div class="tupian-back">
+                    <a href="#">
+                        <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
+                            <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="auto"/>
+                        </a>
+                        <div class="card-bg"></div>
+                        <div class="card-handle">
+                            <div v-on:click="downLoadImage(im)" class="handle-dum qt-btn btn-green-linear download-page">
+                                <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
+                                <span>
+                                免费下载
+                                </span>
+                            </div>
+                            <div v-on:click="favImage(im)" class="handle-fav isfav">
+                                <span class="glyphicon glyphicon-star-empty" style="font-size: 23px;"></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <p class="card-title card-title-text">
+                    <span class="title-text" v-html="im.name"></span>
+                </p>
+                <a href="#" class="card-title card-intro" target="_blank">
+                    <span class="glyphicon glyphicon-download-alt"></span>
+                    <span v-html="im.downloadNumber"></span> &nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-star-empty"></span>
+                    <span v-html="im.favCount"></span>
+                </a>
+            </div>
+        </div>
+    </div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="newFavModalId">
+    <div class="modal fade" tabindex="-1" role="dialog" id="favModalId">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -143,53 +498,63 @@
                                         aria-hidden="true">&times;
                                 </span>
                     </button>
-                    <h4 class="modal-title">创建收藏夹</h4>
+                    <h4 class="modal-title" v-html="title"></h4>
                 </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" v-on:submit.present="addFav">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">名称*</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="名称"
-                                       v-model="favorite.name"/>
-                            </div>
+                <div class="modal-body model-favirite-all">
+                    <form v-if="title == '创建到收藏夹'" class="form-horizontal" style="height:100%;">
+                        <div class="form-group" style="padding-left: 20px;padding-right:20px;">
+                            <input type="text" class="form-control" placeholder="请输入收藏夹名称" style="margin-bottom:10px;"
+                                   v-model="name"/>
+                            <span>创建后将自动保存在此收藏夹内</span>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">描述</label>
-                            <div class="col-sm-10">
-                                        <textarea class="form-control" placeholder="描述"
-                                                  v-model="favorite.description"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">封面图片</label>
-                            <div class="show-image col-sm-10">
-                                <a v-bind:href="'/file/show?path='+favorite.url" target="_blank">
-                                    <img v-bind:src="'/file/show?path='+favorite.url" alt=""
-                                         style="width:140px;height:140px;background: #ddd;"
-                                         class="img-thumbnail"/>
-                                </a>
-                                <input style="left:15px;" type="file" name="file" class="file-input"
-                                       id="inputFileId1"
-                                       onchange="favoriteFileUpload()"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-primary-myself">保存</button>
-                                <button type="button" class="btn btn-default-myself" data-dismiss="modal">返回
-                                </button>
-                            </div>
+                        <div class="form-group" style="text-align:center;margin-top: 249px;">
+                            <button type="button" class="btn btn-primary-myself" v-on:click="createFav">创建</button>
+                            <button type="button" class="btn btn-default-myself btn-sm" v-on:click="cancel">取消</button>
                         </div>
                     </form>
+
+                    <div v-if="title == '添加到收藏夹'" style="text-align: center">
+                        <ul class="favirite-box" style="height:300px;">
+                                <li v-for="fav in favorites" class="fav-list on" v-if="isImage(fav)">
+                                    <a v-bind:href="getUrl(fav)" target="_blank">
+                                    <div class="bg" style="background: url('/images/default.png') 100%;background-size:cover;"></div>
+                                        <p class="h3"><span v-html="fav.count"></span>个作品<span v-if="fav.id == favorite.id">(当前收藏夹)</span></p>
+                                    <p class="h1" v-html="fav.name"></p>
+                                    </a>
+                                    <p class="fav-status fav-ajax">
+                                        <span class="fav-status-init">
+                                            <span class="icon glyphicon glyphicon-ok-circle"></span>
+                                            已收藏
+                                        </span>
+                                        <span class="fav-status-mouse">
+                                            <span class="icon glyphicon glyphicon-minus" v-on:click="delImgFromFav(fav)"></span>
+                                            移除
+                                        </span>
+                                    </p>
+                                </li>
+                                <li class="fav-list" v-else="">
+                                    <a v-bind:href="getUrl(fav)" target="_blank">
+                                    <div class="bg" style="background: url('/images/default.png') 100%;background-size:cover;"></div>
+                                    <p class="h3"><span v-html="fav.count"></span>个作品</p>
+                                    <p class="h1" v-html="fav.name"></p></a>
+                                    <p class="fav-status fav-ajax">
+                                        <span class="icon glyphicon glyphicon-plus" v-on:click="addImgToFav(fav)"></span>
+                                        添加
+                                    </p>
+                                </li>
+                            </ul>
+                        <button style="margin-top:20px;" class="btn btn-primary-myself" v-on:click="toCreateFav">创建收藏夹</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div th:replace="_shared/front/modaler :: modaler"></div>
 <div th:replace="_shared/front/footer :: footer"></div>
 <section th:replace="_shared/foot :: foot"></section>
 <script src="/vendor/sweetalert.min.js"></script>
+<script src="/js/front/application.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
     window.favorite = /*[[${favorite}]]*/ null
@@ -201,8 +566,74 @@
     var app = new Vue({
         el: "#app",
         data: {
+            name:null,
             favorite: favorite,
-            images: images
+            images: images,
+            title: '添加到收藏夹',
+            favorites: [],
+            favorite_image: null,
+            imageId: null
+        },
+        methods: {
+            delImgFromFav: function (fav) {
+                $.get('/front/imageFavorites/del?imageId='+this.imageId + '&favoriteId=' + fav.id, function (result) {
+                    if (result.code == 204) {
+                        app.initImages(app.imageId)
+                    }
+                })
+            },
+            addImgToFav: function (fav) {
+                $.get('/front/imageFavorites/add?imageId='+this.imageId + '&favoriteId=' + fav.id, function (result) {
+                    if (result.code == 201) {
+                        app.initImages(app.imageId)
+                    }
+                })
+            },
+            createFav: function () {
+                $.post('/front/favorites/addImage', 'name=' + this.name + '&imageId=' + this.imageId, function (result) {
+                    if (result.code == 201) {
+                        swal({
+                            text: result.msg,
+                            button: '确定',
+                            icon: result.icon
+                        }).then(function () {
+                            $('#favModalId').modal('hide')
+                        })
+                    }
+                })
+            },
+            cancel: function () {
+                this.title = '添加到收藏夹'
+            },
+            toCreateFav: function () {
+                this.title = '创建到收藏夹'
+            },
+            getUrl: function (fav) {
+              if (this.isImage(fav) && fav.id == this.favorite.id) {
+                  return '#'
+              } else {
+                  return '/front/favorites/' + fav.id
+              }
+            },
+            isImage: function(fav) {
+                return this.favorite_image && this.favorite_image.indexOf('#' + fav.id + '#') != -1
+            },
+            downLoadImage: function (img) {
+                location.href = '/file/download/' + img.id + '?path=' + img.fileUrl
+            },
+            favImage: function (im) {
+                this.imageId = im.id
+                $('#favModalId').modal('show')
+                this.initImages(im.id)
+            },
+            initImages: function (id) {
+                $.get('/front/favorites/findAll', function (result) {
+                    app.favorites = result
+                })
+                $.get('/front/favorites/byImageId/' + id, function (result) {
+                    app.favorite_image = result
+                })
+            }
         }
     })
     /*]]>*/

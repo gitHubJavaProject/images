@@ -19,6 +19,7 @@
         <result column="user_id" property="userId" />
         <result column="download_number" property="downloadNumber" />
         <result column="collection_number" property="collectionNumber" />
+        <result column="status" property="status"/>
     </resultMap>
 
     <select id="search" parameterType="map" resultMap="BaseResultMap">
@@ -52,7 +53,8 @@
       height,
       user_id,
       download_number,
-      collection_number
+      collection_number,
+      status
       )
       VALUES
       (
@@ -71,7 +73,8 @@
       #{height},
       #{userId},
       #{downloadNumber},
-      #{collectionNumber}
+      #{collectionNumber},
+      1
       )
     </insert>
 
@@ -93,6 +96,7 @@
             <if test="userId != null">userId=#{user_id},</if>
             <if test="downloadNumber != null">download_number=#{downloadNumber},</if>
             <if test="collectionNumber != null">collection_number=#{collectionNumber},</if>
+            <if test="status != null">status=#{status},</if>
             update_date=now()
         </set>
         where id=#{id}
@@ -100,7 +104,7 @@
 
     <select id="get" resultMap="BaseResultMap">
       SELECT
-      `id`,`name`,`description`,`show_image`,`file_url`,`type`,`width`,`height`,`tag`, `download_number`, `keys`
+      `id`,`name`,`description`,`show_image`,`file_url`,`type`,`width`,`height`,`tag`, `download_number`, `keys`, `status`
       FROM
       image
       where id=#{id}
@@ -125,6 +129,7 @@
         *
         FROM
         image
+        where status=3
         order by download_number DESC
         limit 0,4
     </select>

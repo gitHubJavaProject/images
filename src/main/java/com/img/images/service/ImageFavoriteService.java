@@ -17,4 +17,16 @@ public class ImageFavoriteService {
     public List<Image> findByFavoriteId(Long id) {
         return imageFavoriteMapper.findByFavoriteId(id);
     }
+
+    public void save(Long imageId, Long favoriteId) {
+        imageFavoriteMapper.create(imageId, favoriteId);
+    }
+
+    public Integer getFavCount(Long id) {
+        return imageFavoriteMapper.getFavCount(id);
+    }
+
+    public void delete(Long imageId, Long favoriteId) {
+        imageFavoriteMapper.deleteByImgIdAndFavId(imageId, favoriteId);
+    }
 }

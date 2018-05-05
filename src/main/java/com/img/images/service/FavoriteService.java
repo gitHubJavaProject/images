@@ -1,6 +1,7 @@
 package com.img.images.service;
 
 import com.img.images.mapper.FavoriteMapper;
+import com.img.images.model.FavAndCountImg;
 import com.img.images.model.Favorite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,19 @@ public class FavoriteService {
 
     @Autowired
     private FavoriteMapper favoriteMapper;
+
+    public List<FavAndCountImg> findAll(Long userId) {
+        return favoriteMapper.findFavAndCountImgByUserId(userId);
+    }
+
+    public String byImage(Long id, Long userId) {
+        List<Favorite> list = favoriteMapper.findFavImgByImgId(id, userId);
+        String str = "#";
+        for (Favorite favorite: list) {
+            str += favorite.getId() + "#";
+        }
+        return str;
+    }
 
     public void save(Favorite favorite) {
         favoriteMapper.save(favorite);
