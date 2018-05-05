@@ -77,10 +77,6 @@
             font-size: xx-large;
             cursor: pointer;
         }
-
-        .select2-dropdown {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -159,11 +155,13 @@
                     <span class="help-block" v-if="!$v.image.width.required || !$v.image.height.required"
                           v-bind:class="{'help-block-show':afterValidation}">请输入宽高</span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" v-bind:class="validationClass('keys')">
                     <label class="control-label">标签*：</label>
-                    <select id="keys" class="form-control" multiple="multiple" v-model="image.keys">
-                        <option v-for="key in allKeys" v-bind:value="key.key" v-html="key.key"></option>
+                    <select id="keysId" class="form-control" multiple="multiple" v-model="addKeys">
+                        <option v-for="k in allKeys" v-bind:value="k.key" v-html="k.key"></option>
                     </select>
+                    <span class="help-block" v-if="!$v.image.keys.required"
+                          v-bind:class="{'help-block-show':afterValidation}">请设置标签</span>
                 </div>
                 <button type="submit" class="btn btn-primary" data-loading-text="保存中">保存</button>
             </form>
@@ -172,8 +170,8 @@
 </div>
 <section th:replace="_shared/foot :: foot"></section>
 <section th:replace="_shared/business/protect/foot :: foot"></section>
-<script src="/vendor/select2/js/select2.min.js"></script>
 <script src="/vendor/sweetalert.min.js"></script>
+<script src="/vendor/select2/js/select2.min.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
     window.categories = /*[[${categories}]]*/ null
@@ -234,10 +232,22 @@
                 width: null,
                 height: null,
                 tag: 1,
-                keys: ["dawda","dwadasada"],
-                allKeys: []
+                keys: ''
             },
+            addKeys: [],
+            allKeys: [],
             categories: []
+        },
+        watch: {
+            addKeys: function (newVal,oldVal) {
+                this.image.keys = ''
+                app.addKeys.forEach(function (value) {
+                    app.image.keys += value + '#'
+                })
+                if (app.image.keys) {
+                    app.image.keys = '#' + app.image.keys
+                }
+            }
         },
         validations: {
             image: {
@@ -260,6 +270,9 @@
                     required: validators.required
                 },
                 fileUrl: {
+                    required: validators.required
+                },
+                keys: {
                     required: validators.required
                 }
             }
@@ -463,8 +476,16 @@
                 this.image.width = image.width
                 this.image.height = image.height
                 this.image.tag = image.tag
-                this.image.url = images.url
+                this.image.keys = image.keys
+                this.addKeys = image.keys.split("#")
+                if (image.keys.indexOf("#") != -1) {
+                    this.addKeys.pop()
+                    this.addKeys.shift()
+                }
             }
+            $.get('/front/selectKey', 'param=', function (result) {
+                app.allKeys = result.keys
+            })
         }
     })
 
@@ -500,11 +521,15 @@
         }
     }
 
-    $("#keys").select2({
-        tags: true,
-        tokenSeparators: ['，', ''],
-    });
-
+    $(function () {
+        $('#keysId').select2({
+            tags: true,
+            tokenSeparators: ['，', ''],
+        });
+        $('#keysId').change(function () {
+            app.addKeys = $('#keysId').val()
+        });
+    })
     /*]]>*/
 </script>
 </body>

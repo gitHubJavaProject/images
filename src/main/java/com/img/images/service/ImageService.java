@@ -32,11 +32,11 @@ public class ImageService {
         imageMapper.delete(id);
     }
 
-    public List<Image> search(Integer page, Integer size, String name) {
+    public List<Image> search(Integer page, Integer size, String name, Long userId) {
         if (page < 1) {
             page = 1;
         }
-        return imageMapper.search((page - 1) * size, size, name);
+        return imageMapper.search((page - 1) * size, size, name, userId);
     }
 
     public Image get(Long id) {

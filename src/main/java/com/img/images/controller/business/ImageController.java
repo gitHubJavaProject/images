@@ -46,7 +46,7 @@ public class ImageController {
         mv.addObject("name", null == name ? "" : name);
         mv.addObject("page", page);
         mv.addObject("size", size);
-        mv.addObject("images", imageService.search(page, size, name));
+        mv.addObject("images", imageService.search(page, size, name, null));
         return mv;
     }
 

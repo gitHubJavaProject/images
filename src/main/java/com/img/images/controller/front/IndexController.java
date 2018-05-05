@@ -70,7 +70,7 @@ public class IndexController extends BaseController {
     public Object lists(@RequestParam(value = "page", defaultValue = "1") Integer page,
                         @RequestParam(value = "size", defaultValue = "10") Integer size,
                         @RequestParam(value = "name", required = false) String name) {
-        List<Image> images = imageService.search(page, size, name);
+        List<Image> images = imageService.search(page, size, name, getLoginUser().getId());
         Map<String, Object> result = new HashMap<>();
         result.put("images", images);
         result.put("page", page);
@@ -90,5 +90,28 @@ public class IndexController extends BaseController {
         oldUser.setPwd(user.getPwd());
         userService.update(oldUser);
         return R.ok(204, "成功！").put("user", user).put("icon", "success");
+    }
+
+    @RequestMapping("categories")
+    public Object getAll() {
+        return categoryService.findAll(null, null);
+    }
+
+    @RequestMapping("image/{id}")
+    public Object getImg(@PathVariable("id") Long id) {
+        return imageService.get(id);
+    }
+
+    @DeleteMapping("images/delete/{id}")
+    public R deleteImage(@PathVariable("id") Long id) {
+        Image image = imageService.get(id);
+        if (null == image) {
+            return R.error(404, "数据不存在！").put("icon", "warning");
+        }
+        if (image.getUserId() != getLoginUser().getId().longValue()) {
+            return R.error(403, "没有此数据权限！").put("icon", "warning");
+        }
+        imageService.delete(id);
+        return R.ok(204, "删除成功！").put("icon", "success");
     }
 }
