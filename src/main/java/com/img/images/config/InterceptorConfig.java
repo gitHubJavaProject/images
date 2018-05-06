@@ -14,6 +14,6 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new UserLoginCheckInterceptor()).addPathPatterns("/front/p/**", "/business/p/**");
         registry.addInterceptor(new UserLoaderInterceptor()).addPathPatterns("/front/**", "/front/p/**", "/business/p/**");
-        registry.addInterceptor(new PermissionCheckerInterceptor()).addPathPatterns("/front/p/**", "/business/p/**");
+        registry.addInterceptor(new PermissionCheckerInterceptor()).addPathPatterns("/business/p/**");
     }
 }

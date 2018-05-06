@@ -77,4 +77,19 @@ public class ImageService {
     public Integer countImgByUserId(Long id) {
         return imageMapper.countImgByUserId(id);
     }
+
+    public Integer countTotal(String param, String category, Integer tag) {
+        return imageMapper.countTotal(param, category, tag);
+    }
+
+    public List<Image> list(Integer page, Integer size, String param, String category, Integer tag, Integer order) {
+        if (page < 1) {
+            page = 1;
+        }
+        return imageMapper.list((page - 1) * size, size, param, category, tag, order);
+    }
+
+    public List<Image> getByTypeStr(String typeStr) {
+        return imageMapper.getByTypeStr(typeStr);
+    }
 }

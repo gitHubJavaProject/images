@@ -72,8 +72,7 @@
 
         .favorite-cover .cover-title {
             color: #666;
-            margin-bottom: 44px;
-            margin-top: 36px;
+            margin-bottom: 24px;
             font-weight: 400;
             font-size: 36px;
         }
@@ -126,10 +125,11 @@
             box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
             background: #fff;
             border-radius: 5px;
-            padding: 10px;
+            padding: 10px 10px 0px 10px;
         }
 
         .tupian-back {
+            position: relative;
             background: #888;
             width: 100%;
             height: 100%;
@@ -201,7 +201,7 @@
 
         .tupian-back .card-handle .handle-dum {
             position: absolute;
-            bottom: 72px;
+            bottom: 34px;
             left: 50%;
             margin: -23px 0 0 -97px;
             width: 195px;
@@ -260,6 +260,11 @@
 
         .tupian-border:hover .card-title-text {
             display: none;
+        }
+
+        .tupian-border:hover .tupian-back .card-bg {
+            opacity: 0.3;
+            filter: alpha(opacity=0.3);
         }
 
         a {
@@ -438,8 +443,9 @@
             <div class="fl cover-left" style="width: 205px;">
                 <img v-bind:src="'/file/show?path='+favorite.url" width="165" height="220"/></div>
             <div class="fl cover-right" style="width: 630px;height: 220px;">
-                <div class="clearfix cover-userinfo"><p class="cover-title">大家都会挖的哈的</p>
-                    <a href="/front/myself" title="TA的个人主页" target="_blank"
+                <div class="clearfix cover-userinfo">
+                    <p class="cover-title">大家都会挖的哈的</p>
+                    <a href="/front/p/myself" title="TA的个人主页" target="_blank"
                        rel="nofollow">
                         <p class="fl">
                             <img class="user-img" th:src="@{'/file/show?path='+${loginUser.header}}"
@@ -453,12 +459,15 @@
 
         </div>
     </div>
-    <p class="w1200 fav-num" th:text="${#lists.size(images)+'个作品'}"></p>
+    <div style="margin:10px 0px;font-size: 18px;">
+        <span class="glyphicon glyphicon-picture"></span>&nbsp;
+        <span class="w1200 fav-num" th:text="${#lists.size(images)+'个作品'}"></span>
+    </div>
     <div class="row">
         <div class="col-md-3" v-for="im in images">
             <div class="tupian-border">
                 <div class="tupian-back">
-                    <a href="#">
+                    <a href="#" style="width:100%; height:100%;">
                         <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
                             <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="auto"/>
                         </a>
@@ -559,6 +568,7 @@
     /*<![CDATA[*/
     window.favorite = /*[[${favorite}]]*/ null
     window.images = /*[[${images}]]*/ null
+    window.loginUser = /*[[${loginUser}}]]*/ null
     /*]]>*/
 </script>
 <script type="text/javascript">
@@ -590,7 +600,7 @@
                 })
             },
             createFav: function () {
-                $.post('/front/favorites/addImage', 'name=' + this.name + '&imageId=' + this.imageId, function (result) {
+                $.post('/front/p/favorites/addImage', 'name=' + this.name + '&imageId=' + this.imageId, function (result) {
                     if (result.code == 201) {
                         swal({
                             text: result.msg,
@@ -612,7 +622,7 @@
               if (this.isImage(fav) && fav.id == this.favorite.id) {
                   return '#'
               } else {
-                  return '/front/favorites/' + fav.id
+                  return '/front/p/favorites/' + fav.id
               }
             },
             isImage: function(fav) {
@@ -622,15 +632,19 @@
                 location.href = '/file/download/' + img.id + '?path=' + img.fileUrl
             },
             favImage: function (im) {
-                this.imageId = im.id
-                $('#favModalId').modal('show')
-                this.initImages(im.id)
+                if (!loginUser) {
+                    window.location.href = '/front/login?' + window.location.href
+                } else {
+                    this.imageId = im.id
+                    $('#favModalId').modal('show')
+                    this.initImages(im.id)
+                }
             },
             initImages: function (id) {
-                $.get('/front/favorites/findAll', function (result) {
+                $.get('/front/p/favorites/findAll', function (result) {
                     app.favorites = result
                 })
-                $.get('/front/favorites/byImageId/' + id, function (result) {
+                $.get('/front/p/favorites/byImageId/' + id, function (result) {
                     app.favorite_image = result
                 })
             }

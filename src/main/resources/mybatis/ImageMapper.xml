@@ -20,6 +20,7 @@
         <result column="download_number" property="downloadNumber" />
         <result column="collection_number" property="collectionNumber" />
         <result column="status" property="status"/>
+        <result column="fav_count" property="favCount"/>
     </resultMap>
 
     <select id="search" parameterType="map" resultMap="BaseResultMap">
@@ -140,5 +141,42 @@
         FROM
         image
         where user_id=#{id}
+    </select>
+    
+    <select id="list" parameterType="map" resultMap="BaseResultMap">
+        select
+        i.*, count(f.id) as fav_count
+        from
+        image i
+        left join
+        image_favorite f
+        on i.id=f.image_id
+        where 1=1 and i.status=3
+        <if test="params != null and params != ''">and i.name like "%"#{params}"%"</if>
+        <if test="category != null and category != ''">and i.type_str like #{category}"%"</if>
+        <if test="tag != null">and i.tag=#{tag}</if>
+        group by i.id
+        <if test="order == 1" >order by i.create_date desc</if>
+        <if test="order == 2" >order by i.download_number desc</if>
+        <if test="order == 3" >order by fav_count desc</if>
+        limit #{offset},#{size}
+    </select>
+
+    <select id="countTotal" resultType="int">
+        select
+        count(i.id)
+        from image i
+        where 1=1 and i.status=3
+        <if test="params != null and params != ''">and i.name like "%"#{params}"%"</if>
+        <if test="category != null and category != ''">and i.type_str like #{category}"%"</if>
+        <if test="tag != null">and i.tag=#{tag}</if>
+    </select>
+    
+    <select id="getByTypeStr" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        image
+        where type_str=#{typeStr}
     </select>
 </mapper>

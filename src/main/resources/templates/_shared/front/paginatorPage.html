@@ -1,0 +1,21 @@
+<div th:fragment="paginatorPage" class="paginator text-center">
+    <nav aria-label="Page navigation" id="page">
+        <ul class="pagination" style="cursor: pointer;">
+            <li v-if="page != 1">
+                <a aria-label="Previous" v-bind:href="getSearchPreviousPage()">
+                    <span aria-hidden="true">上一页</span>
+                </a>
+            </li>
+            <li v-for="p in pages" v-bind:class="{'active': page == p}">
+                <a v-bind:href="getSearchPage(p)">
+                    <span aria-hidden="true" v-html="p"></span>
+                </a>
+            </li>
+            <li v-if="page != countPage">
+                <a aria-label="Next" v-bind:href="getSearchNextPage()">
+                    <span aria-hidden="true">下一页</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

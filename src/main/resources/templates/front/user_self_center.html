@@ -518,7 +518,7 @@
                     <div class="col-md-3" v-for="fav in favorites">
                         <div class="favorite-list">
                             <a href="#" class="fav-modify" v-on:click="updateFavorite(fav)"></a>
-                            <a v-bind:href="'/front/favorites/'+fav.id" class="fav-box" target="_blank">
+                            <a v-bind:href="'/front/p/favorites/'+fav.id" class="fav-box" target="_blank">
                                 <span class="fl box-cover-ckg">
                                     <img v-bind:src="'/file/show?path='+fav.url" width="220px" height="300px"/>
                                 </span>
@@ -937,7 +937,7 @@
                 if (self.favorite.name) {
                     if (self.favorite.id) {
                         $.ajax({
-                            url: '/front/favorites/' + self.favorite.id,
+                            url: '/front/p/favorites/' + self.favorite.id,
                             type: 'put',
                             data: $.param(self.favorite),
                             success: function (result) {
@@ -962,7 +962,7 @@
                         })
                     } else {
                         $.ajax({
-                            url: '/front/favorites',
+                            url: '/front/p/favorites',
                             type: 'post',
                             data: $.param(self.favorite),
                             success: function (result) {
@@ -1121,7 +1121,7 @@
                 this.initFavorites(p, s)
             },
             initFavorites: function (p, s) {
-                $.get('/front/favorites?page=' + p + '&size=' + s,function (result) {
+                $.get('/front/p/favorites?page=' + p + '&size=' + s,function (result) {
                     app.favorites = result.favorites
                     app.favPage = result.page
                     app.favSize = result.size

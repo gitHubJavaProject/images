@@ -13,4 +13,6 @@ public interface CategoryMapper extends BaseMapper<Category>{
     List<Category> findByParent(Long id);
 
     void deleteByParent(Long id);
+
+    List<Category> getByName(String name);
 }

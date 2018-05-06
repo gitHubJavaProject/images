@@ -104,16 +104,11 @@
 <body>
 <form novalidate="true" id="register_form" class="form form-register clearfix" v-on:submit.prevent="doRegister"
       v-bind:class="{'has-error-message': hasError}">
-  <h1><img src="/images/logo.png" width="160px"/></h1>
-  <p class="help-block text-center" style="font-size: 16px;">
-    <span>跨境电商重点企业推介平台</span>
-  </p>
   <div class="alert alert-danger" role="alert" style="margin: 15px;">
     请输入
-    <span v-if="!$v.reg.mobile.required">手机号</span>
+    <span v-if="!$v.reg.userName.required">用户名</span>
     <span v-if="!$v.reg.pwd.required">密码</span>
   </div>
-  <input id="from" type="hidden" th:value="${from}"/>
   <div v-if="hasMobile" class="alert alert-danger" role="alert" style="margin: 15px;"
        v-bind:class="{'beforeBlock': hasMobile}">
     <span v-if="errorMsg" >{{errorMsg}}</span>
@@ -121,9 +116,10 @@
   <div class="form-group">
     <div>
       <div class="input-wrapper">
-        <input id="mobile" name="mobile" type="text" class="form-control" placeholder="手机号"
-               v-model="reg.mobile"/>
+        <input id="userName" name="userName" type="text" class="form-control" placeholder="用户名"
+               v-model="reg.userName"/>
       </div>
+      <input id="from" type="hidden" th:value="${from}"/>
       <div class="input-wrapper">
         <input id="pwd" name="pwd" type="password" class="form-control" placeholder="密码"
                v-model="reg.pwd"/>
@@ -132,87 +128,81 @@
   </div>
   <div class="form-group" style="border: 0">
     <button type="submit" class="btn btn-primary btn-register btn-block" data-loading-text="登录中">
-      <span>企业登录</span>
+      <span>登录</span>
     </button>
   </div>
-  <p class="text-muted text-center">
-    <small>没有账户？</small>
-    <a href="/ent/register">点此注册</a>
-  </p>
 </form>
 <section th:replace="_shared/foot :: foot"></section>
 <script type="text/javascript">
-  /*<![CDATA[*/
-  var app = new Vue({
-    el: '#register_form',
-    mixins: [vuelidate.validationMixin],
-    data: {
-      errorMsg: false,
-      showCounter: false,
-      afterValidation: false,
-      reg: {
-        mobile: null,
-        pwd: null
-      }
-    },
-    computed: {
-      hasMobile: function () {
-        return !this.afterValidation && this.errorMsg;
-      },
-      hasError: function () {
-        return this.afterValidation && this.$v.$invalid;
-      }
-    },
-    validations: {
-      reg: {
-        mobile: {
-          required: validators.required,
-          numeric: validators.numeric
-        },
-        pwd: {
-          required: validators.required
-        }
-      }
-    },
-    methods: {
-      doRegister: function () {
-        this.$v.$touch();
-        this.afterValidation = true;
-        var fromUri = $('#from').val();
-        if (!this.$v.$invalid) {
-          before();
-          $.ajax({
-            type: "POST",
-            url: "/ent/login",
-            data: $.param(this.reg),
-            dataType: "json",
-            success: function(data){
-              if (data.code == 500) {
-                app.errorMsg = data.msg;
-                app.afterValidation = false;
-                after();
-              }else {
-                if (fromUri.length > 0) {
-                  window.location.href = decodeURI(fromUri);
-                } else {
-                  window.location.href = '/ent/p/apply';
-                }
-              }
+    /*<![CDATA[*/
+    var app = new Vue({
+        el: '#register_form',
+        mixins: [vuelidate.validationMixin],
+        data: {
+            errorMsg: false,
+            afterValidation: false,
+            reg: {
+                userName: null,
+                pwd: null
             }
-          });
+        },
+        computed: {
+            hasMobile: function () {
+                return !this.afterValidation && this.errorMsg;
+            },
+            hasError: function () {
+                return this.afterValidation && this.$v.$invalid;
+            }
+        },
+        validations: {
+            reg: {
+                userName: {
+                    required: validators.required,
+                },
+                pwd: {
+                    required: validators.required
+                }
+            }
+        },
+        methods: {
+            doRegister: function () {
+                this.$v.$touch();
+                this.afterValidation = true;
+                var fromUri = $('#from').val();
+                if (!this.$v.$invalid) {
+                    before();
+                    $.ajax({
+                        type: "POST",
+                        url: "/front/login",
+                        data: $.param(this.reg),
+                        dataType: "json",
+                        success: function(data){
+                            if (data.code == 500) {
+                                app.errorMsg = data.msg;
+                                app.afterValidation = false;
+                                after();
+                            }else {
+                                if (fromUri.length > 0) {
+                                    window.location.href = decodeURI(fromUri);
+                                } else {
+                                    window.location.href = '/front/index';
+                                }
+                            }
+                        }
+                    });
+                }
+            }
         }
-      }
+    })
+
+    function before (){
+        $('button[type=submit]').button('loading');
     }
-  })
 
-  function before (){
-    $('button[type=submit]').button('loading');
-  }
-
-  function after () {
-    $('button[type=submit]').button('reset');
-  }
-  /*]]>*/
+    function after () {
+        $('button[type=submit]').button('reset');
+    }
+    /*]]>*/
 </script>
 </body>
 </html>

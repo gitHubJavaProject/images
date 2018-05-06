@@ -52,4 +52,10 @@ public class AccountController {
         return R.ok(204, "成功");
     }
 
+    @GetMapping("login")
+    public ModelAndView login(@RequestParam(value = "from", required = false) String from, ModelAndView mv) {
+        mv.setViewName("front/login");
+        mv.addObject("from", from);
+        return mv;
+    }
 }

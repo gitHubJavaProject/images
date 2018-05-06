@@ -35,6 +35,9 @@ public class CategoryController {
             if (category.getParent() != 0 && null == parent) {
                 return R.error(404, "上一级不存在，请重新选择！").put("icon", "warning");
             }
+            if (null != categoryService.getByName(category.getName()) && categoryService.getByName(category.getName()).size() > 0) {
+                return R.error(404, "已存在！").put("icon", "warning");
+            }
             categoryService.create(category);
             return R.ok(201, "保存成功！").put("icon", "success").put("category", category);
         } catch (Exception e) {
@@ -48,6 +51,10 @@ public class CategoryController {
             Category oldCategory = categoryService.get(id);
             if (null == oldCategory) {
                 return R.error(404, "未找到数据！").put("icon", "warning");
+            }
+            if (null != categoryService.getByName(category.getName()) && categoryService.getByName(category.getName()).size() > 0
+                    && categoryService.getByName(category.getName()).get(0).getId() != oldCategory.getId().longValue()) {
+                return R.error(404, "已存在！").put("icon", "warning");
             }
             oldCategory.setName(category.getName());
             oldCategory.setDescription(category.getDescription());

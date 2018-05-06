@@ -43,4 +43,8 @@ public class CategoryService {
             categoryMapper.deleteByParent(category.getId());
         }
     }
+
+    public List<Category> getByName(String name) {
+        return categoryMapper.getByName(name);
+    }
 }

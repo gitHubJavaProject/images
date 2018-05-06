@@ -65,4 +65,6 @@ public class Image extends BaseModel{
      */
     private Integer status;
 
+    private Integer favCount;
+
 }

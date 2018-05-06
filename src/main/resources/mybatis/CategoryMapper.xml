@@ -83,6 +83,14 @@
         c.id,c.name,c.description,c.parent,c.level
         FROM
         category c
-        where parent=#{id}
+        where c.parent=#{id}
+    </select>
+
+    <select id="getByName" resultMap="BaseResultMap">
+        SELECT
+        c.id,c.name,c.description,c.parent,c.level
+        FROM
+        category c
+        where c.name=#{name}
     </select>
 </mapper>

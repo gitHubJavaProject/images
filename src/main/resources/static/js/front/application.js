@@ -28,7 +28,7 @@ function selecTable(ths) {
 }
 
 function headerSelectSubmit() {
-    window.location.href = '/front/list?param='+encodeURIComponent($("#exampleInputAmount").val())
+    window.location.href = '/front/list?params='+encodeURIComponent($("#exampleInputAmount").val())
 }
 
 function searchBlur() {

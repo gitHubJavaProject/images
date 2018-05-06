@@ -6,10 +6,12 @@ import com.img.images.model.Image;
 import com.img.images.model.User;
 import com.img.images.service.*;
 import com.img.images.util.R;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +41,12 @@ public class IndexController extends BaseController {
     @RequestMapping("index")
     public ModelAndView index(ModelAndView mv) {
         mv.setViewName("front/index");
-        List<Category> categories = categoryService.findAll(null, null);
-        mv.addObject("categories", categories);
-        List<Image> images = imageService.findByDownloadNumber();
-        mv.addObject("images", images);
+        List<Image> images = imageService.list(1, 4, null, null, null, 3);
+        mv.addObject("imagesFav", convert(images));
+        List<Image> images2 = imageService.list(1, 4, null, null, null, 2);
+        mv.addObject("imagesDown", convert(images2));
+        List<Image> images1 = imageService.list(1, 4, null, null, null, 1);
+        mv.addObject("imagesNew", convert(images1));
         return mv;
     }
 
@@ -52,12 +56,50 @@ public class IndexController extends BaseController {
     }
 
     @RequestMapping("list")
-    public ModelAndView list(ModelAndView mv, String param) {
-        mv.setViewName("front/index");
+    public ModelAndView list(ModelAndView mv,
+                             @RequestParam(value = "params", required = false) String params,
+                             @RequestParam(value = "category", required = false) String category,
+                             @RequestParam(value = "tag", required = false) Integer tag,
+                             @RequestParam(value = "order", required = false) Integer order,
+                             @RequestParam(value = "page", defaultValue = "1") Integer page,
+                             @RequestParam(value = "size", defaultValue = "16") Integer size) {
+        mv.setViewName("front/list");
+        List<Image> images = imageService.list(page, size, params, category, tag, order);
+        Integer countTotal = imageService.countTotal(params, category, tag);
+        mv.addObject("images", convert(images));
+        mv.addObject("page", page);
+        mv.addObject("size", size);
+        mv.addObject("params", null == params? "" : params);
+        mv.addObject("category", category);
+        mv.addObject("tag", tag);
+        mv.addObject("order", order);
+        mv.addObject("countPage", countTotal%size>0?countTotal/size+1:countTotal/size);
+        mv.addObject("countTotal", countTotal);
+        List<Category> categories = categoryService.findAll(null, 1);
+        if (StringUtils.isNotBlank(category)) {
+            List<Category> category1 = categoryService.getByName((category.contains(">") ? category.substring(category.lastIndexOf(">")+1):category));
+            categories = categoryService.findAll(null, (category1.get(0).getLevel()+1) > 3 ? 3 : (category1.get(0).getLevel()+1));
+        }
+        mv.addObject("categories", categories);
         return mv;
     }
 
-    @RequestMapping("myself")
+    private List<Map<String, Object>> convert(List<Image> images) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for(Image image:images) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", image.getId());
+            map.put("name", image.getName());
+            map.put("showImage", image.getShowImage());
+            map.put("fileUrl", image.getFileUrl());
+            map.put("downloadNumber", image.getDownloadNumber());
+            map.put("favCount", imageFavoriteService.getFavCount(image.getId()));
+            list.add(map);
+        }
+        return list;
+    }
+
+    @RequestMapping("p/myself")
     public ModelAndView myself(ModelAndView mv) {
         mv.setViewName("front/user_self_center");
         Integer countFav = favoriteService.countFavByUserId(getLoginUser().getId());

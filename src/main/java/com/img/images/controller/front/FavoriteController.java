@@ -5,6 +5,7 @@ import com.img.images.model.Favorite;
 import com.img.images.model.Image;
 import com.img.images.service.FavoriteService;
 import com.img.images.service.ImageFavoriteService;
+import com.img.images.service.ImageService;
 import com.img.images.util.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +18,16 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("front/favorites")
+@RequestMapping("front/p/favorites")
 public class FavoriteController extends BaseController{
     @Autowired
     private FavoriteService favoriteService;
 
     @Autowired
     private ImageFavoriteService imageFavoriteService;
+
+    @Autowired
+    private ImageService imageService;
 
     @RequestMapping("")
     public Object list(Integer page, Integer size) {

@@ -16,4 +16,16 @@ public interface ImageMapper extends BaseMapper<Image>{
     List<Image> findByDownloadNumber();
 
     Integer countImgByUserId(Long id);
+
+    Integer countTotal(@Param("params") String params,
+                       @Param("category") String category,
+                       @Param("tag") Integer tag);
+
+    List<Image> list(@Param("offset") Integer offset,
+                     @Param("size") Integer size,
+                     @Param("params") String params,
+                     @Param("category") String category,
+                     @Param("tag") Integer tag,
+                     @Param("order") Integer order);
+    List<Image> getByTypeStr(String typeStr);
 }
