@@ -1,12 +1,16 @@
 package com.img.images.controller.front;
 
+import com.img.images.mapper.UserRoleMapper;
 import com.img.images.model.Role;
 import com.img.images.model.RoleChecker;
 import com.img.images.model.User;
+import com.img.images.model.UserRole;
 import com.img.images.service.UserService;
 import com.img.images.util.FinalKeys;
 import com.img.images.util.R;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,9 +25,13 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+
     @RequestMapping("register")
-    public ModelAndView register(ModelAndView mv) {
+    public ModelAndView register(ModelAndView mv, @RequestParam(value = "from", required = false) String from) {
         mv.setViewName("front/register");
+        mv.addObject("from", from);
         return mv;
     }
 
@@ -38,7 +46,7 @@ public class AccountController {
             return R.error(500, "密码不正确");
         }
         List<Role> roles = userService.findRolesByUserId(user.getId());
-        if (new RoleChecker(roles).hasRole((long)Role.FRONT)) {
+        if (new RoleChecker(roles).hasRole((long) Role.FRONT)) {
             session.setAttribute(FinalKeys.LOGIN_USER_KEY, user);
             return R.ok(200, "成功");
         } else {
@@ -57,5 +65,41 @@ public class AccountController {
         mv.setViewName("front/login");
         mv.addObject("from", from);
         return mv;
+    }
+
+    @PostMapping("register")
+    @Transactional
+    public Object registerUser(@RequestParam("name") String name,
+                               @RequestParam("pwd") String pwd,
+                               @RequestParam("userName") String userName,
+                               HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (StringUtils.isBlank(name)) {
+            String msg = "昵称不能为空！";
+            return R.error(500, msg);
+        }
+        if (StringUtils.isBlank(pwd)) {
+            String msg = "密码不能为空！";
+            return R.error(500, msg);
+        }
+        if (StringUtils.isBlank(userName)) {
+            String msg = "用户名不能为空！";
+            return R.error(500, msg);
+        }
+        User existingUser = this.userService.getByUserName(userName);
+        if (existingUser != null) {
+            String msg = "您的账号已经注册过了";
+            return R.error(500, msg);
+        }
+        User user = new User();
+        user.setUserName(userName);
+        user.setPwd(pwd);
+        user.setName(name);
+        UserRole userRole = new UserRole();
+        userRole.setUserId(user.getId());
+        userRole.setRoleId((long)Role.FRONT);
+        userRoleMapper.create(userRole);
+        session.setAttribute(FinalKeys.LOGIN_USER_KEY, user);
+        return R.ok(201, "注册成功！");
     }
 }

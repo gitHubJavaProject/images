@@ -79,3 +79,7 @@ var loginModal = new Vue({
         }
     }
 })
+
+function regist() {
+    window.location.href = '/front/register?' + window.location.href
+}
