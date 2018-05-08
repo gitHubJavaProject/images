@@ -29,7 +29,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, name, user_name, pwd, status
+        id, name, user_name, pwd, status, header
     </sql>
 
     <insert id="create" parameterType="com.img.images.model.User" useGeneratedKeys="true" keyProperty="id">

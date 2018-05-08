@@ -54,7 +54,7 @@
     background: #000;
     opacity: 0;
     filter: alpha(opacity=0);
-    z-index: 2;
+    z-index: 0;
     cursor: pointer;
   }
 
@@ -380,8 +380,8 @@
             <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
               <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="286px"/>
             </a>
-            <div class="card-bg"></div>
             <div class="card-handle">
+              <div class="card-bg" v-on:click="getImage(im)"></div>
               <div v-on:click="downLoadImage(im)" class="handle-dum qt-btn btn-green-linear download-page">
                 <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
                 <span>
@@ -397,7 +397,7 @@
         <p class="card-title card-title-text">
           <span class="title-text" v-html="im.name"></span>
         </p>
-        <a href="#" class="card-title card-intro" target="_blank">
+        <a v-bind:href="'/front/images/'+im.id" class="card-title card-intro" target="_blank">
           <span class="glyphicon glyphicon-download-alt"></span>
           <span v-html="im.downloadNumber"></span> &nbsp;&nbsp;
           <span class="glyphicon glyphicon-star-empty"></span>
@@ -419,8 +419,8 @@
             <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
               <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="286px"/>
             </a>
-            <div class="card-bg"></div>
             <div class="card-handle">
+              <div class="card-bg" v-on:click="getImage(im)"></div>
               <div v-on:click="downLoadImage(im)" class="handle-dum qt-btn btn-green-linear download-page">
                 <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
                 <span>
@@ -436,7 +436,7 @@
         <p class="card-title card-title-text">
           <span class="title-text" v-html="im.name"></span>
         </p>
-        <a href="#" class="card-title card-intro" target="_blank">
+        <a v-bind:href="'/front/images/'+im.id" class="card-title card-intro" target="_blank">
           <span class="glyphicon glyphicon-download-alt"></span>
           <span v-html="im.downloadNumber"></span> &nbsp;&nbsp;
           <span class="glyphicon glyphicon-star-empty"></span>
@@ -533,6 +533,9 @@
           imageId: null
       },
       methods: {
+          getImage: function (im) {
+              window.open( '/front/images/'+im.id)
+          },
           delImgFromFav: function (fav) {
               $.get('/front/imageFavorites/del?imageId='+this.imageId + '&favoriteId=' + fav.id, function (result) {
                   if (result.code == 204) {

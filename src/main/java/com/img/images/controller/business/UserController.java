@@ -57,6 +57,7 @@ public class UserController {
             }
             oldUser.setName(user.getName());
             oldUser.setPwd(user.getPwd());
+            oldUser.setHeader(user.getHeader());
             userService.update(oldUser);
             return R.ok(204, "成功！").put("user", user).put("icon", "success");
         } catch (Exception e) {

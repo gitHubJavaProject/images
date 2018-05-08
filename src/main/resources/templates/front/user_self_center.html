@@ -469,11 +469,9 @@
                         <td v-html="getStatus(image)">
                         </td>
                         <td class="text-center">
-                            <div v-if="image.status==1 || image.status==5">
-                                <a class="btn btn-link" href="#" v-on:click="updateImage(image.id)">编辑</a>
+                                <a v-if="image.status==1 || image.status==5" class="btn btn-link" href="#" v-on:click="updateImage(image.id)">编辑</a>
                                 <a class="btn btn-link" href="#" v-on:click="delImage(image.id)">删除</a>
-                                <a class="btn btn-link" href="#" v-on:click="submitImage(image.id)">提交</a>
-                            </div>
+                                <a v-if="image.status==1 || image.status==5" class="btn btn-link" href="#" v-on:click="submitImage(image.id)">提交</a>
                         </td>
                     </tr>
                     </tbody>
@@ -1234,7 +1232,7 @@
                     if (self.image.id) {
                         $.ajax({
                             method: 'put',
-                            url: '/business/p/images/update/' + self.image.id,
+                            url: '/front/images/update/' + self.image.id,
                             data: $.param(self.image),
                             dataType: 'json',
                             success: function (result) {
@@ -1278,7 +1276,7 @@
                     } else {
                         $.ajax({
                             method: 'post',
-                            url: '/business/p/images/add',
+                            url: '/front/images/add',
                             data: $.param(self.image),
                             dataType: 'json',
                             success: function (result) {

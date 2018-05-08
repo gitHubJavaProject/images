@@ -147,19 +147,6 @@ public class IndexController extends BaseController {
         return imageService.get(id);
     }
 
-    @DeleteMapping("images/delete/{id}")
-    public R deleteImage(@PathVariable("id") Long id) {
-        Image image = imageService.get(id);
-        if (null == image) {
-            return R.error(404, "数据不存在！").put("icon", "warning");
-        }
-        if (image.getUserId() != getLoginUser().getId().longValue()) {
-            return R.error(403, "没有此数据权限！").put("icon", "warning");
-        }
-        imageService.delete(id);
-        return R.ok(204, "删除成功！").put("icon", "success");
-    }
-
     @RequestMapping("images/{id}/getFavCount")
     public Object getFavCount(@PathVariable("id") Long id) {
         return imageFavoriteService.getFavCount(id);

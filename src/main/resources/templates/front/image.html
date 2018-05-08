@@ -9,6 +9,305 @@
     <link rel="stylesheet" href="/css/front/application.css"/>
     <script src="/js/front/application.js"></script>
     <style>
+        .combine {
+            width: 800px;
+            float: left;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .detail-container .detail-left {
+            padding-bottom: 0;
+        }
+
+        .detail-container .detail-left {
+            width: 800px;
+            background-color: #fff;
+            padding: 0 10px 10px;
+        }
+
+        .fl {
+            float: left;
+        }
+
+        .combine2 {
+            width: 800px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: -webkit-linear-gradient(top, rgba(250, 250, 250, 0), #fafafa);
+            background: -o-linear-gradient(top, rgba(250, 250, 250, 0), rgba(250, 250, 250));
+            background: -moz-linear-gradient(top, rgba(250, 250, 250, 0), rgba(250, 250, 250));
+            background: linear-gradient(top, rgba(250, 250, 250, 0), rgba(250, 250, 250));
+        }
+
+        .detail-container .detail-right {
+            width: 380px;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .detail-container .detail-title {
+            height: 80px;
+            padding: 0 15px;
+        }
+
+        h1 {
+            font-weight: 400;
+        }
+
+        .detail-container .detail-title p {
+            width: 630px;
+            line-height: 80px;
+            font-size: 24px;
+            color: #666;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .resumeModel-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            background: #ff6749;
+            text-align: center;
+            line-height: 28px;
+            font-size: 16px;
+            color: #fff;
+            margin-right: 12px;
+            vertical-align: 2px;
+            display: none;
+        }
+
+        .detail-container.YC-type .big-img {
+            background-position: -11px -85px;
+        }
+
+        .detail-container .detail-title div a {
+            margin-top: 20px;
+            display: inline-block;
+            width: 42px;
+            height: 42px;
+            vertical-align: middle;
+            margin-left: 14px;
+            background: url(http://icon.qiantucdn.com/revision/images/detail.png) no-repeat;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .detail-container.YC-type .similar-img {
+            background-position: -59px -85px;
+        }
+
+        .detail-container .detail-title div a {
+            margin-top: 20px;
+            display: inline-block;
+            width: 42px;
+            height: 42px;
+            vertical-align: middle;
+            margin-left: 14px;
+            background: url(http://icon.qiantucdn.com/revision/images/detail.png) no-repeat;
+        }
+
+        .combine2 a {
+            width: 300px;
+            height: 46px;
+            display: block;
+            margin-left: -150px;
+            position: absolute;
+            left: 50%;
+            bottom: 30px;
+            line-height: 46px;
+            text-align: center;
+            z-index: 1;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            background: #10c55b;
+            color: #fff;
+            background: -webkit-linear-gradient(left, #17e66c, #10c55b);
+            background: -o-linear-gradient(left, #17e66c, #10c55b);
+            background: -moz-linear-gradient(left, #17e66c, #10c55b);
+            background: linear-gradient(left, #17e66c, #10c55b);
+        }
+
+        .combine2 a i {
+            background: url(http://pic.qiantucdn.com/yang/img/combine.png);
+            width: 20px;
+            vertical-align: -5px;
+            height: 20px;
+            display: inline-block;
+            margin-left: 12px;
+        }
+
+        .detail-container .detail-user {
+            min-height: 316px;
+            background-color: #fff;
+            min-height: 435px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .detail-container .detail-trait {
+            height: 70px;
+            line-height: 70px;
+            padding: 0 24px;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .detail-container .detail-info {
+            position: relative;
+        }
+
+        .detail-container .detail-info {
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        .detail-container .detail-user .user-info {
+            padding: 15px 20px 10px;
+            line-height: 50px;
+            font-size: 14px;
+        }
+
+        .detail-container .detail-fixed {
+            z-index: 20 !important;
+        }
+
+        .detail-container .detail-fixed {
+            background-color: #fff;
+            padding: 15px 20px;
+            width: 380px;
+        }
+
+        .detail-container .detail-trait .icon-s.addstyle {
+            margin-right: 0;
+        }
+
+        .detail-container .detail-trait p.addstyle {
+            float: left;
+            width: 166px;
+            line-height: 18px;
+            padding-top: 17px;
+        }
+
+        .detail-container .detail-trait .icon-s {
+            margin-right: 50px;
+        }
+
+        .detail-container .detail-trait p {
+            color: #666;
+            display: inline-block;
+            padding-left: 35px;
+            font-size: 14px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .detail-container .detail-trait p.changetop {
+            padding-top: 26px;
+        }
+
+        .detail-container .detail-user .user-info img {
+            border-radius: 50%;
+        }
+
+        .detail-container .detail-info .img-des {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+
+        .detail-container .detail-info .img-tag {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 15px 5px;
+        }
+
+        .detail-container .detail-info .img-share {
+            padding: 20px 0 0;
+        }
+
+        .bdshare-button-style0-16 {
+            zoom: 1;
+        }
+
+        .detail-container .detail-info .img-tag .tag-title {
+            color: #666;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .detail-container .detail-info .img-tag .tag-box {
+            overflow: hidden;
+            height: 80px;
+        }
+
+        .tag-box {
+            height: auto !important;
+            max-height: 115px;
+        }
+
+        .detail-container .detail-info .img-tag .tag-box a {
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #ececec;
+            margin: 8px 8px 0 0;
+            padding: 4px 8px;
+        }
+
+        .detail-container .detail-info .img-des p {
+            height: 25px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .img-info .inform-ogc {
+        }
+
+        .img-info .inform {
+            position: absolute;
+            right: 10px;
+            top: 18px;
+            height: 20px;
+            line-height: 20px;
+            width: 49px;
+            text-align: right;
+            font-size: 14px;
+            color: #999;
+            z-index: 15;
+        }
+
+        .w1200 {
+            width: 1200px;
+            margin: 50px auto;
+        }
+
+        .detail-container .bread-crumbs {
+            height: 46px;
+            line-height: 46px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .btn-primary-myself {
+            background-image: linear-gradient(to right, rgb(34, 244, 138), rgb(16, 197, 91));
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
+        .btn-primary-myself:hover {
+            color: #fff;
+        }
+
         .favorite-cover {
             overflow: initial;
         }
@@ -32,11 +331,6 @@
 
         .favorite-cover .w1200 {
             position: relative;
-        }
-
-        .w1200 {
-            width: 1200px;
-            margin: 0 auto;
         }
 
         .fl {
@@ -435,55 +729,100 @@
 </head>
 <body>
 <head th:replace="_shared/front/header :: header"></head>
-<div id="app" class="container-fluid">
-    <div class="favorite-cover">
-        <div class="cover-bg1"
-             v-bind:style="'background: url(/file/show?path='+favorite.url+') 100%;background-size:cover;'"></div>
-        <div class="w1200 clearfix">
-            <div class="fl cover-left" style="width: 205px;">
-                <img v-bind:src="'/file/show?path='+favorite.url" width="165" height="220"/></div>
-            <div class="fl cover-right" style="width: 630px;height: 220px;">
-                <div class="clearfix cover-userinfo">
-                    <p class="cover-title">大家都会挖的哈的</p>
-                    <a href="/front/p/myself" title="TA的个人主页" target="_blank"
-                       rel="nofollow">
-                        <p class="fl">
-                            <img class="user-img" th:src="@{'/file/show?path='+${loginUser.header}}"
-                                 width="32" height="32" alt=""/>
-                            <span th:text="${loginUser.name}"></span>
-                        </p>
-                    </a>
+<div id="app" class="detail-container w1200">
+    <div class="bread-crumbs">当前位置：<a href="/front/index">首页</a> &gt;
+        <a v-for="type in types" v-bind:href="getUrlByCat(type)" v-bind:title="type"><span
+                v-html="type"></span><span>></span></a>
+        当前作品
+    </div>
+    <div class="clearfix">
+        <div class="combine">
+            <div class="detail-left fl">
+                <div class="detail-title clearfix">
+                    <h1><p class="fl" v-html="image.name"></p></h1>
                 </div>
-                <p class="cover-info"><span><span>创建时间：</span><span th:text="${#dates.format(loginUser.createDate, 'yyyy-MM-dd')}"></span></span>
-                </p></div>
-
+                <div class="detail-img type-tag">
+                    <div>
+                        <img v-bind:src="'/file/show?path='+image.showImage" style="width:100%"
+                            class="show-area-pic" id="show-area-pic" v-bind:alt="image.name" v-bind:title="image.name"
+                            width="650"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detail-right fr">
+            <div class="detail-user" style="min-height:200px;">
+                <div class="user-info clearfix">
+                    <div class="fl" style="margin-right: 7px;">
+                        <img v-bind:src="'/file/show?path='+image.user.header" class="head-img2" width="48" height="48"
+                             alt=""/>
+                    </div>
+                    <p class="fl" style="color:#666;">
+                        <span class="alert-color" v-html="image.user.name"></span>
+                        于
+                        <em class="alert-color" th:text="${#dates.format(image.createDate,'yyyy年MM月dd日')}"></em>上传
+                    </p>
+                </div>
+                <div style="text-align: center;margin-top: 10px;">
+                    <button class="btn btn-primary-myself" v-on:click="downLoadImage()">免费下载</button>
+                </div>
+                <div class="clearfix img-info" style="margin-top:25px;">
+                    <p class="fl" style="width:120px;text-align: center">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        <font id="s_readnum" v-html="image.collectionNumber"></font>
+                    </p>
+                    <p class="fl" style="width:120px;text-align: center">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                        <font id="s_dnum" v-html="image.downloadNumber"></font>
+                    </p>
+                    <p class="fl" style="width:120px;text-align: center">
+                        <span class="glyphicon glyphicon-star-empty"></span>
+                        <font id="s_fav" v-html="image.favCount"></font>
+                    </p>
+                </div>
+            </div>
+            <div class="detail-info">
+                <div class="img-des">
+                    <div class="clearfix">
+                        <p>尺寸：<span v-html="image.width"></span>×<span v-html="image.height"></span>像素 </p>
+                        <p><span v-html="image.description"></span></p>
+                    </div>
+                </div>
+                <div class="img-tag">
+                    <p class="tag-title">标签 </p>
+                    <div class="clearfix tag-box">
+                        <a class="fl sta-site" v-for="key in keys" v-bind:href="'/front/list?params='+key"
+                           target="_blank" title="mother" sta-site="12" v-html="key"></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div style="margin:10px 0px;font-size: 18px;">
-        <span class="glyphicon glyphicon-picture"></span>&nbsp;
-        <span class="w1200 fav-num" th:text="${#lists.size(images)+'个作品'}"></span>
-    </div>
     <div class="row">
+    <div class="col-md-12">
+        <h3>您可能在找这些：</h3>
+    </div>
+</div>
+    <div class="row" style="background-color: #fff;padding-top:15px;">
         <div class="col-md-3" v-for="im in images">
             <div class="tupian-border">
                 <div class="tupian-back">
-                    <a href="#" style="width:100%; height:100%;">
-                        <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
-                            <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="auto"/>
-                        </a>
-                        <div class="card-handle">
-                            <div class="card-bg" v-on:click="getImage(im)"></div>
-                            <div v-on:click="downLoadImage(im)" class="handle-dum qt-btn btn-green-linear download-page">
-                                <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
-                                <span>
+                    <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
+                        <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="286px"/>
+                    </a>
+                    <div class="card-handle">
+                        <div class="card-bg" v-on:click="getImage(im)"></div>
+                        <div v-on:click="downLoadImageById(im)"
+                             class="handle-dum qt-btn btn-green-linear download-page">
+                            <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
+                            <span>
                                 免费下载
                                 </span>
-                            </div>
-                            <div v-on:click="favImage(im)" class="handle-fav isfav">
-                                <span class="glyphicon glyphicon-star-empty" style="font-size: 23px;"></span>
-                            </div>
                         </div>
-                    </a>
+                        <div v-on:click="favImage(im)" class="handle-fav isfav">
+                            <span class="glyphicon glyphicon-star-empty" style="font-size: 23px;"></span>
+                        </div>
+                    </div>
                 </div>
                 <p class="card-title card-title-text">
                     <span class="title-text" v-html="im.name"></span>
@@ -497,7 +836,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" tabindex="-1" role="dialog" id="favModalId">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -524,34 +862,34 @@
 
                     <div v-if="title == '添加到收藏夹'" style="text-align: center">
                         <ul class="favirite-box" style="height:300px;">
-                                <li v-for="fav in favorites" class="fav-list on" v-if="isImage(fav)">
-                                    <a v-bind:href="getUrl(fav)" target="_blank">
+                            <li v-for="fav in favorites" class="fav-list on" v-if="isImage(fav)">
+                                <a v-bind:href="getUrl(fav)" target="_blank">
                                     <div class="bg" style="background: url('/images/default.png') 100%;background-size:cover;"></div>
-                                        <p class="h3"><span v-html="fav.count"></span>个作品<span v-if="fav.id == favorite.id">(当前收藏夹)</span></p>
+                                    <p class="h3"><span v-html="fav.count"></span>个作品<span v-if="fav.id == favorite.id">(当前收藏夹)</span></p>
                                     <p class="h1" v-html="fav.name"></p>
-                                    </a>
-                                    <p class="fav-status fav-ajax">
+                                </a>
+                                <p class="fav-status fav-ajax">
                                         <span class="fav-status-init">
                                             <span class="icon glyphicon glyphicon-ok-circle"></span>
                                             已收藏
                                         </span>
-                                        <span class="fav-status-mouse">
+                                    <span class="fav-status-mouse">
                                             <span class="icon glyphicon glyphicon-minus" v-on:click="delImgFromFav(fav)"></span>
                                             移除
                                         </span>
-                                    </p>
-                                </li>
-                                <li class="fav-list" v-else="">
-                                    <a v-bind:href="getUrl(fav)" target="_blank">
+                                </p>
+                            </li>
+                            <li class="fav-list" v-else="">
+                                <a v-bind:href="getUrl(fav)" target="_blank">
                                     <div class="bg" style="background: url('/images/default.png') 100%;background-size:cover;"></div>
                                     <p class="h3"><span v-html="fav.count"></span>个作品</p>
                                     <p class="h1" v-html="fav.name"></p></a>
-                                    <p class="fav-status fav-ajax">
-                                        <span class="icon glyphicon glyphicon-plus" v-on:click="addImgToFav(fav)"></span>
-                                        添加
-                                    </p>
-                                </li>
-                            </ul>
+                                <p class="fav-status fav-ajax">
+                                    <span class="icon glyphicon glyphicon-plus" v-on:click="addImgToFav(fav)"></span>
+                                    添加
+                                </p>
+                            </li>
+                        </ul>
                         <button style="margin-top:20px;" class="btn btn-primary-myself" v-on:click="toCreateFav">创建收藏夹</button>
                     </div>
                 </div>
@@ -566,8 +904,8 @@
 <script src="/js/front/application.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    window.favorite = /*[[${favorite}]]*/ null
     window.images = /*[[${images}]]*/ null
+    window.image = /*[[${image}]]*/ null
     window.loginUser = /*[[${loginUser}]]*/ null
     /*]]>*/
 </script>
@@ -576,9 +914,25 @@
     var app = new Vue({
         el: "#app",
         data: {
-            name:null,
-            favorite: favorite,
-            images: images,
+            image: {
+                id: null,
+                name: null,
+                description: null,
+                showImage: null,
+                fileUrl: null,
+                typeStr: null,
+                tag: null,
+                downloadNumber: null,
+                collectionNumber: null,
+                keys: null,
+                width: null,
+                height: null,
+                user: null,
+                favCount: null,
+            },
+            types: [],
+            keys: [],
+            images: [],
             title: '添加到收藏夹',
             favorites: [],
             favorite_image: null,
@@ -622,16 +976,16 @@
                 this.title = '创建到收藏夹'
             },
             getUrl: function (fav) {
-              if (this.isImage(fav) && fav.id == this.favorite.id) {
-                  return '#'
-              } else {
-                  return '/front/p/favorites/' + fav.id
-              }
+                if (this.isImage(fav) && fav.id == this.favorite.id) {
+                    return '#'
+                } else {
+                    return '/front/p/favorites/' + fav.id
+                }
             },
             isImage: function(fav) {
                 return this.favorite_image && this.favorite_image.indexOf('#' + fav.id + '#') != -1
             },
-            downLoadImage: function (img) {
+            downLoadImageById: function (img) {
                 location.href = '/file/download/' + img.id + '?path=' + img.fileUrl
             },
             favImage: function (im) {
@@ -650,6 +1004,25 @@
                 $.get('/front/p/favorites/byImageId/' + id, function (result) {
                     app.favorite_image = result
                 })
+            },
+            downLoadImage: function () {
+                location.href = '/file/download/' + this.image.id + '?path=' + this.image.fileUrl
+            },
+            getUrlByCat: function (type) {
+                var url = ''
+                for (var i = 0; i <= $.inArray(type, this.types); i++) {
+                    url += this.types[i] + '>'
+                }
+                url = url.substring(0, url.length - 1)
+                return '/front/list?category=' + url
+            }
+        },
+        mounted: function () {
+            this.image = image;
+            this.types = this.image.typeStr.split(">")
+            this.keys = this.image.keys.substring(1, this.image.keys.length - 1).split("#")
+            if (images) {
+                this.images = images
             }
         }
     })

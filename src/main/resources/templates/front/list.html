@@ -54,7 +54,7 @@
             background: #000;
             opacity: 0;
             filter: alpha(opacity=0);
-            z-index: 2;
+            z-index: 0;
             cursor: pointer;
         }
 
@@ -628,29 +628,27 @@
         <div class="col-md-3" v-for="im in images">
             <div class="tupian-border">
                 <div class="tupian-back">
-                    <a href="#" style="width:100%; height:100%;">
-                        <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
-                            <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="286px"/>
-                        </a>
-                        <div class="card-bg"></div>
-                        <div class="card-handle">
-                            <div v-on:click="downLoadImage(im)"
-                                 class="handle-dum qt-btn btn-green-linear download-page">
-                                <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
-                                <span>
+                    <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
+                        <img v-bind:src="'/file/show?path='+im.showImage" width="100%" height="286px"/>
+                    </a>
+                    <div class="card-handle">
+                        <div class="card-bg" v-on:click="getImage(im)"></div>
+                        <div v-on:click="downLoadImage(im)"
+                             class="handle-dum qt-btn btn-green-linear download-page">
+                            <span class="glyphicon glyphicon-download-alt" style="font-size: 16px;"></span>
+                            <span>
                                 免费下载
                                 </span>
-                            </div>
-                            <div v-on:click="favImage(im)" class="handle-fav isfav">
-                                <span class="glyphicon glyphicon-star-empty" style="font-size: 23px;"></span>
-                            </div>
                         </div>
-                    </a>
+                        <div v-on:click="favImage(im)" class="handle-fav isfav">
+                            <span class="glyphicon glyphicon-star-empty" style="font-size: 23px;"></span>
+                        </div>
+                    </div>
                 </div>
                 <p class="card-title card-title-text">
                     <span class="title-text" v-html="im.name"></span>
                 </p>
-                <a href="#" class="card-title card-intro" target="_blank">
+                <a v-bind:href="'/front/images/'+im.id" class="card-title card-intro" target="_blank">
                     <span class="glyphicon glyphicon-download-alt"></span>
                     <span v-html="im.downloadNumber"></span> &nbsp;&nbsp;
                     <span class="glyphicon glyphicon-star-empty"></span>
@@ -742,7 +740,7 @@
     window.size = /*[[${size}]]*/ null
     window.countPage = /*[[${countPage}]]*/ null
     window.countTotal = /*[[${countTotal}]]*/ null
-    window.loginUser = /*[[${loginUser}}]]*/ null
+    window.loginUser = /*[[${loginUser}]]*/ null
     /*]]>*/
 </script>
 <script src="/js/front/page.js"></script>
@@ -766,6 +764,9 @@
             imageId: null
         },
         methods: {
+            getImage: function (im) {
+                window.open( '/front/images/'+im.id)
+            },
             getTagUrl: function (or) {
                 var href = window.location.href
                 href = decodeURI(href)
