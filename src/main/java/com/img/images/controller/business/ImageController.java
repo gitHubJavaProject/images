@@ -1,5 +1,6 @@
 package com.img.images.controller.business;
 
+import com.img.images.controller.BaseController;
 import com.img.images.model.Image;
 import com.img.images.service.CategoryService;
 import com.img.images.service.ImageService;
@@ -21,7 +22,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("business/p/images")
-public class ImageController {
+public class ImageController extends BaseController{
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageController.class);
     public static final int RANDOM_RANGE = 65535;
     @Autowired
@@ -73,6 +74,7 @@ public class ImageController {
                     || null == image.getHeight() || null == image.getTag() || null == image.getType()) {
                 return R.error(400, "参数不正确！").put("icon", "warning");
             }
+            image.setUserId(getLoginUser().getId());
             imageService.save(image);
             return R.ok(201, "保存成功！").put("icon", "success").put("image", image);
         } catch (Exception e) {
@@ -93,9 +95,18 @@ public class ImageController {
             if (null == oldImage) {
                 return R.error(404, "此数据不存在！").put("icon", "warning");
             }
-            image.setId(id);
-            imageService.update(image);
-            return R.ok(204, "保存成功！").put("icon", "success");
+            oldImage.setTypeStr(image.getTypeStr());
+            oldImage.setType(image.getType());
+            oldImage.setShowImage(image.getShowImage());
+            oldImage.setFileUrl(image.getFileUrl());
+            oldImage.setDescription(image.getDescription());
+            oldImage.setHeight(image.getHeight());
+            oldImage.setName(image.getName());
+            oldImage.setWidth(image.getWidth());
+            oldImage.setTag(image.getTag());
+            oldImage.setKeys(image.getKeys());
+            imageService.update(oldImage);
+            return R.ok(204, "修改成功！").put("icon", "success");
         } catch (Exception e) {
             LOGGER.error("系统内部错误！", e);
             return R.error(500, "系统内部错误！").put("icon", "error");

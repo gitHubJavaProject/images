@@ -78,7 +78,13 @@ public class IndexController extends BaseController {
         List<Category> categories = categoryService.findAll(null, 1);
         if (StringUtils.isNotBlank(category)) {
             List<Category> category1 = categoryService.getByName((category.contains(">") ? category.substring(category.lastIndexOf(">")+1):category));
-            categories = categoryService.findAll(null, (category1.get(0).getLevel()+1) > 3 ? 3 : (category1.get(0).getLevel()+1));
+            if ((category1.get(0).getLevel()+1) > 3) {
+                categories = categoryService.findAll1(null, 3, category1.get(0).getParent());
+            } else {
+                System.out.println(category1.get(0).getId());
+                categories = categoryService.findAll1(null, category1.get(0).getLevel()+1, category1.get(0).getId());
+            }
+
         }
         mv.addObject("categories", categories);
         return mv;

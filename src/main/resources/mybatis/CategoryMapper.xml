@@ -21,7 +21,18 @@
         order BY
         c.update_date DESC
     </select>
-
+    <select id="findAll1" resultMap="BaseResultMap">
+        SELECT
+        c.id,c.name,c.description,c.parent,c.level
+        FROM
+        category c
+        where 1=1
+        <if test="parent != null">and c.parent=#{parent}</if>
+        <if test="level != null">and c.level=#{level}</if>
+        <if test="name != null and name != ''">and c.name like "%"#{name}"%"</if>
+        order BY
+        c.update_date DESC
+    </select>
     <insert id="save" parameterType="com.img.images.model.Category" useGeneratedKeys="true" keyProperty="id">
         insert
         INTO

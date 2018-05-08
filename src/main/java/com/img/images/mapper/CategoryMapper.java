@@ -10,6 +10,8 @@ import java.util.List;
 public interface CategoryMapper extends BaseMapper<Category>{
     List<Category> findAll(@Param("name") String name, @Param("level") Integer level);
 
+    List<Category> findAll1(@Param("name") String name, @Param("level") Integer level, @Param("parent") Long parent);
+
     List<Category> findByParent(Long id);
 
     void deleteByParent(Long id);

@@ -535,6 +535,9 @@
             font-size: 12px;
             color: #666;
         }
+        .yang-class .on a {
+            color:red;
+        }
     </style>
 </head>
 <body>
@@ -957,11 +960,11 @@
             },
             isAllCat: function () {
                 if (this.category) {
-                    for (key in this.categories) {
-                        if (this.category.split(">").pop() == this.categories[key].name) {
+                   /* for (key in this.categories) {
+                        if (this.category.split(">").pop() == this.categories[key].name) {*/
                             return false
-                        }
-                    }
+                    /*    }
+                    }*/
                 }
                 return true
             },

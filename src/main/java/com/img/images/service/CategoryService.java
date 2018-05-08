@@ -18,6 +18,10 @@ public class CategoryService {
         return categoryMapper.findAll(name, level);
     }
 
+    public List<Category> findAll1(String name, Integer level, Long parent) {
+        return categoryMapper.findAll1(name, level, parent);
+    }
+
     public void create(Category category) {
         categoryMapper.save(category);
     }
