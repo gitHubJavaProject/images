@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -91,5 +92,14 @@ public class ImageService {
 
     public List<Image> getByTypeStr(String typeStr) {
         return imageMapper.getByTypeStr(typeStr);
+    }
+
+    public List<Image> findByKeys(String keys, Long id) {
+        String[] keys1 = keys.substring(1,keys.length()-1).split("#");
+        List<Image> list = new ArrayList<>();
+        for (String key:keys1) {
+            list.addAll(imageMapper.findByKeys(key, id));
+        }
+        return list.size()>8? list.subList(0,8): list;
     }
 }

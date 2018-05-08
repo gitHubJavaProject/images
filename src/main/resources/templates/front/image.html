@@ -936,7 +936,8 @@
             title: '添加到收藏夹',
             favorites: [],
             favorite_image: null,
-            imageId: null
+            imageId: null,
+            favorite:null
         },
         methods: {
             getImage: function (im) {
@@ -976,11 +977,11 @@
                 this.title = '创建到收藏夹'
             },
             getUrl: function (fav) {
-                if (this.isImage(fav) && fav.id == this.favorite.id) {
+                /*if (this.isImage(fav) && fav.id == this.favorite.id) {
                     return '#'
-                } else {
+                } else {*/
                     return '/front/p/favorites/' + fav.id
-                }
+               // }
             },
             isImage: function(fav) {
                 return this.favorite_image && this.favorite_image.indexOf('#' + fav.id + '#') != -1

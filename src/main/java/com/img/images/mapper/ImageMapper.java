@@ -28,4 +28,6 @@ public interface ImageMapper extends BaseMapper<Image>{
                      @Param("tag") Integer tag,
                      @Param("order") Integer order);
     List<Image> getByTypeStr(String typeStr);
+
+    List<Image> findByKeys(@Param("key") String  key, @Param("id") Long id);
 }

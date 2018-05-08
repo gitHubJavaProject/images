@@ -111,4 +111,5 @@ public class FavoriteController extends BaseController{
         }
         return list;
     }
+
 }

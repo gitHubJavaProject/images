@@ -81,7 +81,7 @@ public class IndexController extends BaseController {
             if ((category1.get(0).getLevel()+1) > 3) {
                 categories = categoryService.findAll1(null, 3, category1.get(0).getParent());
             } else {
-                System.out.println(category1.get(0).getId());
+               // System.out.println(category1.get(0).getId());
                 categories = categoryService.findAll1(null, category1.get(0).getLevel()+1, category1.get(0).getId());
             }
 

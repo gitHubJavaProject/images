@@ -28,7 +28,7 @@
         *
         from image
         where 1=1
-        <if test="name != null and name != ''">and name like "%"#{name}"%"</if>
+        <if test="name != null and name != ''">and `name` like "%"#{name}"%"</if>
         <if test="userId != null">and user_id=#{userId}</if>
         order by update_date desc
         limit #{offset},#{size}
@@ -178,5 +178,14 @@
         FROM
         image
         where type_str=#{typeStr}
+    </select>
+
+    <select id="findByKeys" resultMap="BaseResultMap">
+         SELECT
+        *
+        FROM
+        image
+        where 1=1 and id !=#{id}
+        <if test="key != null and key != ''">and `keys` like "%"#{key}"%"</if>
     </select>
 </mapper>
