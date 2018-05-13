@@ -183,4 +183,5 @@ public class IndexController extends BaseController {
         imageService.update(image);
         return R.ok(204, "提交成功！").put("icon", "warning");
     }
+
 }
