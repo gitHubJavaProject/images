@@ -725,11 +725,29 @@
             display: block;
         }
 
+        .detail-container .detail-img.type-tag {
+            position: relative;
+        }
+
+        .detail-container .detail-img.type-tag:after {
+            position: absolute;
+            content: " ";
+            width: 90px;
+            height: 84px;
+            top: 24px;
+            left: -11px;
+            z-index: 1;
+            background: url(/images/detail.png) no-repeat;
+        }
+
+        .detail-container.YC-type .type-tag:after {
+            background-position: -90px 0px;
+        }
     </style>
 </head>
 <body>
 <head th:replace="_shared/front/header :: header"></head>
-<div id="app" class="detail-container w1200">
+<div id="app" class="detail-container w1200" v-bind:class="{'YC-type':image.tag==2}">
     <div class="bread-crumbs">当前位置：<a href="/front/index">首页</a> &gt;
         <a v-for="type in types" v-bind:href="getUrlByCat(type)" v-bind:title="type"><span
                 v-html="type"></span><span>></span></a>
@@ -765,6 +783,7 @@
                 </div>
                 <div style="text-align: center;margin-top: 10px;">
                     <button class="btn btn-primary-myself" v-on:click="downLoadImage()">免费下载</button>
+                    <button class="btn btn-default-myself" v-on:click="favImage(image)">收藏</button>
                 </div>
                 <div class="clearfix img-info" style="margin-top:25px;">
                     <p class="fl" style="width:120px;text-align: center">
@@ -785,6 +804,7 @@
                 <div class="img-des">
                     <div class="clearfix">
                         <p>尺寸：<span v-html="image.width"></span>×<span v-html="image.height"></span>像素 </p>
+                        <p>格式：<span v-html="image.pattern"></span></p>
                         <p><span v-html="image.description"></span></p>
                     </div>
                 </div>
@@ -799,12 +819,12 @@
         </div>
     </div>
     <div class="row">
-    <div class="col-md-12">
-        <h3>您可能在找这些：</h3>
+    <div class="col-md-12" style="margin-top: 15px;">
+        <h5>您可能在找这些：</h5>
     </div>
 </div>
-    <div class="row" style="background-color: #fff;padding-top:15px;">
-        <div class="col-md-3" v-for="im in images">
+    <div class="row">
+        <div class="col-md-3" v-for="im in images" style="margin-bottom: 15px;">
             <div class="tupian-border">
                 <div class="tupian-back">
                     <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
@@ -865,7 +885,7 @@
                             <li v-for="fav in favorites" class="fav-list on" v-if="isImage(fav)">
                                 <a v-bind:href="getUrl(fav)" target="_blank">
                                     <div class="bg" style="background: url('/images/default.png') 100%;background-size:cover;"></div>
-                                    <p class="h3"><span v-html="fav.count"></span>个作品<span v-if="fav.id == favorite.id">(当前收藏夹)</span></p>
+                                    <p class="h3"><span v-html="fav.count"></span>个作品</p>
                                     <p class="h1" v-html="fav.name"></p>
                                 </a>
                                 <p class="fav-status fav-ajax">
@@ -927,7 +947,9 @@
                 keys: null,
                 width: null,
                 height: null,
-                user: null,
+                user: {
+                    header: null
+                },
                 favCount: null,
             },
             types: [],
@@ -984,6 +1006,7 @@
                // }
             },
             isImage: function(fav) {
+                //console.log(this.favorite_image && this.favorite_image.indexOf('#' + fav.id + '#') != -1)
                 return this.favorite_image && this.favorite_image.indexOf('#' + fav.id + '#') != -1
             },
             downLoadImageById: function (img) {
@@ -991,7 +1014,7 @@
             },
             favImage: function (im) {
                 if (!loginUser) {
-                    window.location.href = '/front/login?' + window.location.href
+                    window.location.href = '/front/login?from=' + window.location.href
                 } else {
                     this.imageId = im.id
                     $('#favModalId').modal('show')
@@ -999,10 +1022,13 @@
                 }
             },
             initImages: function (id) {
+                //console.log(id)
                 $.get('/front/p/favorites/findAll', function (result) {
+                    //console.log(result)
                     app.favorites = result
                 })
                 $.get('/front/p/favorites/byImageId/' + id, function (result) {
+                    //console.log(result)
                     app.favorite_image = result
                 })
             },

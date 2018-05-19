@@ -6,12 +6,14 @@ import com.img.images.model.Image;
 import com.img.images.model.PatternService;
 import com.img.images.model.User;
 import com.img.images.service.*;
+import com.img.images.util.FinalKeys;
 import com.img.images.util.R;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,14 +142,16 @@ public class IndexController extends BaseController {
     }
 
     @PutMapping("update/{id}")
-    public R updateUser(@PathVariable("id") Long id, User user) {
+    public R updateUser(@PathVariable("id") Long id, User user, HttpServletRequest request) {
         User oldUser = userService.getById(id);
         if (null == oldUser) {
             return R.error(404, "数据不存在！").put("icon", "warning");
         }
         oldUser.setName(user.getName());
         oldUser.setPwd(user.getPwd());
+        oldUser.setHeader(user.getHeader());
         userService.update(oldUser);
+        request.getSession().setAttribute(FinalKeys.LOGIN_USER_KEY, userService.getByUserName(oldUser.getUserName()));
         return R.ok(204, "成功！").put("user", user).put("icon", "success");
     }
 
@@ -189,7 +193,7 @@ public class IndexController extends BaseController {
         }
         image.setStatus(2);
         imageService.update(image);
-        return R.ok(204, "提交成功！").put("icon", "warning");
+        return R.ok(204, "提交成功！").put("icon", "success");
     }
 
 }

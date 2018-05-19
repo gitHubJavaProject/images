@@ -871,6 +871,7 @@
                 imgModal.image.tag = 1
                 imgModal.image.keys = ''
                 imgModal.addKeys = []
+                imgModal.image.pattern = ''
                 $('#newImgModalId').modal('show')
                 $.get('/front/categories', function (result) {
                     if (result) {
@@ -930,10 +931,14 @@
                         imgModal.image.tag = image.tag
                         imgModal.image.keys = image.keys
                         imgModal.addKeys = image.keys.split("#")
+                        imgModal.image.pattern = image.pattern
                         if (image.keys.indexOf("#") != -1) {
                             imgModal.addKeys.pop()
                             imgModal.addKeys.shift()
                         }
+                        //console.log($('#keysId').val())
+                        $('#keysId').val(imgModal.addKeys)
+                        $('#keysId').trigger('change')
                     }
                 })
             },
@@ -1189,7 +1194,7 @@
                 height: null,
                 tag: 1,
                 keys: '',
-                pattern: null
+                pattern: ''
             },
             addKeys: [],
             allKeys: [],
@@ -1458,6 +1463,8 @@
             imgModal.addKeys = $('#keysId').val()
         });
     })
+
+    $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     /*]]>*/
 </script>
 </body>

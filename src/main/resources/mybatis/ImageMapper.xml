@@ -110,7 +110,7 @@
     <select id="get" resultMap="BaseResultMap">
       SELECT
       `id`,`name`,`description`,`show_image`,`file_url`,`type`,`width`,`height`,`tag`,
-       `download_number`, `keys`, `status`, `create_date`, `user_id`, `pattern`
+       `download_number`, `collection_number`, `keys`, `status`, `create_date`, `user_id`, `pattern`
       FROM
       image
       where id=#{id}

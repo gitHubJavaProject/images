@@ -45,6 +45,9 @@ public class AccountController {
         if (!user.getPwd().equals(pwd.trim())) {
             return R.error(500, "密码不正确");
         }
+        if (user.getStatus() == User.STATUS_STOP) {
+            return R.error(500, "当前用户已禁用！");
+        }
         List<Role> roles = userService.findRolesByUserId(user.getId());
         if (new RoleChecker(roles).hasRole((long) Role.FRONT)) {
             session.setAttribute(FinalKeys.LOGIN_USER_KEY, user);
@@ -95,6 +98,8 @@ public class AccountController {
         user.setUserName(userName);
         user.setPwd(pwd);
         user.setName(name);
+        user.setStatus(User.STATUS_START);
+        userService.create(user);
         UserRole userRole = new UserRole();
         userRole.setUserId(user.getId());
         userRole.setRoleId((long)Role.FRONT);

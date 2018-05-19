@@ -243,7 +243,7 @@
                 height: null,
                 tag: 1,
                 keys: '',
-                pattern: null
+                pattern: ''
             },
             addKeys: [],
             allKeys: [],
@@ -493,6 +493,7 @@
                 this.image.tag = image.tag
                 this.image.keys = image.keys
                 this.addKeys = image.keys.split("#")
+                this.image.pattern = image.pattern
                 if (image.keys.indexOf("#") != -1) {
                     this.addKeys.pop()
                     this.addKeys.shift()

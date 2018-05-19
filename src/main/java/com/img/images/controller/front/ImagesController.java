@@ -32,7 +32,12 @@ public class ImagesController {
     public ModelAndView getPage(ModelAndView mv, @PathVariable("id") Long id) {
         mv.setViewName("front/image");
         Image image = imageService.get(id);
-        image.setCollectionNumber(null==image.getCollectionNumber()?1:image.getCollectionNumber()+1);
+        if (null==image.getCollectionNumber()) {
+            image.setCollectionNumber(1L);
+        } else {
+            Long n = image.getCollectionNumber()+1;
+            image.setCollectionNumber(n);
+        }
         imageService.update(image);
         mv.addObject("image", convert(image));
         mv.addObject("images", convert1(imageService.findByKeys(image.getKeys(), image.getId())));

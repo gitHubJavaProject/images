@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Transactional
 @Service
@@ -100,6 +99,14 @@ public class ImageService {
         for (String key:keys1) {
             list.addAll(imageMapper.findByKeys(key, id));
         }
-        return list.size()>8? list.subList(0,8): list;
+        Set<Image> set = new TreeSet<Image>(new Comparator<Image>() {
+            @Override
+            public int compare(Image o1, Image o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+        set.addAll(list);
+        List<Image> list1 =  new ArrayList<>(set);
+        return list1.size()>8? list1.subList(0,8): list1;
     }
 }
