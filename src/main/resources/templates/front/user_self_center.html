@@ -648,6 +648,15 @@
                                     <span class="help-block" v-if="!$v.image.type.required"
                                           v-bind:class="{'help-block-show':afterValidation}">请选择分类</span>
                                 </div>
+                                <div class="form-group" v-bind:class="validationClass('pattern')">
+                                    <label class="control-label">图片格式*</label>
+                                    <select class="form-control" v-model="image.pattern">
+                                        <option value="">请选择</option>
+                                        <option v-for="pattern in patterns" v-bind:value="pattern.id" v-html="pattern.name"></option>
+                                    </select>
+                                    <span class="help-block" v-if="!$v.image.pattern.required"
+                                          v-bind:class="{'help-block-show':afterValidation}">请选择格式</span>
+                                </div>
                                 <div class="form-group" v-bind:class="validationClass('name')">
                                     <label for="name" class="control-label">名称*</label>
                                     <input type="text" class="form-control" id="name" placeholder="请输入名称" v-model="image.name"/>
@@ -708,6 +717,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     window.loginUser = /*[[${loginUser}]]*/ null
+    window.patterns = /*[[${patterns}]]*/ null
     /*window.favorites = /!*[[${favorites}]]*!/ null*/
     /*]]>*/
 </script>
@@ -1178,11 +1188,13 @@
                 width: null,
                 height: null,
                 tag: 1,
-                keys: ''
+                keys: '',
+                pattern: null
             },
             addKeys: [],
             allKeys: [],
-            categories: []
+            categories: [],
+            patterns: patterns
         },
         watch: {
             addKeys: function (newVal,oldVal) {
@@ -1219,6 +1231,9 @@
                     required: validators.required
                 },
                 keys: {
+                    required: validators.required
+                },
+                pattern: {
                     required: validators.required
                 }
             }

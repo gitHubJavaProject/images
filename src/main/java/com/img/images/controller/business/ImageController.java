@@ -2,6 +2,7 @@ package com.img.images.controller.business;
 
 import com.img.images.controller.BaseController;
 import com.img.images.model.Image;
+import com.img.images.model.PatternService;
 import com.img.images.service.CategoryService;
 import com.img.images.service.ImageService;
 import com.img.images.util.R;
@@ -31,6 +32,9 @@ public class ImageController extends BaseController{
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private PatternService patternService;
+
     @Value("${upload.file.root}")
     private String uploadFileRoot;
 
@@ -55,6 +59,7 @@ public class ImageController extends BaseController{
     public ModelAndView getDetail(ModelAndView mv) {
         mv.setViewName("business/protect/image_detail");
         mv.addObject("categories", categoryService.findAll(null,null));
+        mv.addObject("patterns", patternService.findAll());
         return mv;
     }
 
@@ -63,6 +68,7 @@ public class ImageController extends BaseController{
         mv.setViewName("business/protect/image_detail");
         mv.addObject("categories", categoryService.findAll(null,null));
         mv.addObject("image", imageService.get(id));
+        mv.addObject("patterns", patternService.findAll());
         return mv;
     }
 

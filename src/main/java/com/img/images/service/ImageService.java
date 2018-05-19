@@ -79,15 +79,15 @@ public class ImageService {
         return imageMapper.countImgByUserId(id);
     }
 
-    public Integer countTotal(String param, String category, Integer tag) {
-        return imageMapper.countTotal(param, category, tag);
+    public Integer countTotal(String param, String category, Integer tag, Integer pattern) {
+        return imageMapper.countTotal(param, category, tag, pattern);
     }
 
-    public List<Image> list(Integer page, Integer size, String param, String category, Integer tag, Integer order) {
+    public List<Image> list(Integer page, Integer size, String param, String category, Integer tag, Integer order, Integer pattern) {
         if (page < 1) {
             page = 1;
         }
-        return imageMapper.list((page - 1) * size, size, param, category, tag, order);
+        return imageMapper.list((page - 1) * size, size, param, category, tag, order, pattern);
     }
 
     public List<Image> getByTypeStr(String typeStr) {

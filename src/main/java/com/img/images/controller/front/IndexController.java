@@ -3,6 +3,7 @@ package com.img.images.controller.front;
 import com.img.images.controller.BaseController;
 import com.img.images.model.Category;
 import com.img.images.model.Image;
+import com.img.images.model.PatternService;
 import com.img.images.model.User;
 import com.img.images.service.*;
 import com.img.images.util.R;
@@ -38,14 +39,17 @@ public class IndexController extends BaseController {
     @Autowired
     private ImageFavoriteService imageFavoriteService;
 
+    @Autowired
+    private PatternService patternService;
+
     @RequestMapping("index")
     public ModelAndView index(ModelAndView mv) {
         mv.setViewName("front/index");
-        List<Image> images = imageService.list(1, 4, null, null, null, 3);
+        List<Image> images = imageService.list(1, 4, null, null, null, 3, null);
         mv.addObject("imagesFav", convert(images));
-        List<Image> images2 = imageService.list(1, 4, null, null, null, 2);
+        List<Image> images2 = imageService.list(1, 4, null, null, null, 2, null);
         mv.addObject("imagesDown", convert(images2));
-        List<Image> images1 = imageService.list(1, 4, null, null, null, 1);
+        List<Image> images1 = imageService.list(1, 4, null, null, null, 1, null);
         mv.addObject("imagesNew", convert(images1));
         return mv;
     }
@@ -59,13 +63,16 @@ public class IndexController extends BaseController {
     public ModelAndView list(ModelAndView mv,
                              @RequestParam(value = "params", required = false) String params,
                              @RequestParam(value = "category", required = false) String category,
+                             @RequestParam(value = "pattern", required = false) Integer pattern,
                              @RequestParam(value = "tag", required = false) Integer tag,
                              @RequestParam(value = "order", required = false) Integer order,
                              @RequestParam(value = "page", defaultValue = "1") Integer page,
                              @RequestParam(value = "size", defaultValue = "16") Integer size) {
         mv.setViewName("front/list");
-        List<Image> images = imageService.list(page, size, params, category, tag, order);
-        Integer countTotal = imageService.countTotal(params, category, tag);
+        List<Image> images = imageService.list(page, size, params, category, tag, order, pattern);
+        Integer countTotal = imageService.countTotal(params, category, tag, pattern);
+        mv.addObject("patterns", patternService.findAll());
+        mv.addObject("pattern", pattern);
         mv.addObject("images", convert(images));
         mv.addObject("page", page);
         mv.addObject("size", size);
@@ -112,6 +119,7 @@ public class IndexController extends BaseController {
         mv.addObject("countFav", countFav);
         Integer countImg = imageService.countImgByUserId(getLoginUser().getId());
         mv.addObject("countImg", countImg);
+        mv.addObject("patterns", patternService.findAll());
         //List<Favorite> favorites = favoriteService.findByUserId(1L);
         // mv.addObject("favorites", favorites);
         return mv;

@@ -11,7 +11,7 @@
                     <span aria-hidden="true" v-html="p"></span>
                 </a>
             </li>
-            <li v-if="page != countPage">
+            <li v-if="countPage != 0 &amp; page != countPage">
                 <a aria-label="Next" v-bind:href="getSearchNextPage()">
                     <span aria-hidden="true">下一页</span>
                 </a>

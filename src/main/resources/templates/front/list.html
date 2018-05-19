@@ -193,9 +193,9 @@
             width: 500px;
         }
 
-        .modal-dialog .modal-content .modal-body {
+       /* .modal-dialog .modal-content .modal-body {
             height: 400px;
-        }
+        }*/
 
         .model-favirite-all .favirite-box {
             margin-bottom: 2px;
@@ -538,6 +538,21 @@
         .yang-class .on a {
             color:red;
         }
+
+        .yang-class ul li i {
+            width: 16px;
+            height: 16px;
+            display: block;
+            float: left;
+            border: 1px solid #d3d3d3;
+            margin-top: 11px;
+            margin-right: 5px;
+        }
+
+        .yang-check i {
+            background: url(/images/icon25.png) 1px -110px;
+            border: 1px solid #10c55b;
+        }
     </style>
 </head>
 <body>
@@ -562,21 +577,32 @@
                 <em class="text-orange" v-html="countTotal"></em>
                 个结果
             </div>
-            <div class="yang-class"><strong>分类：</strong>
+            <div class="yang-class">
+                <strong>分类：</strong>
                 <ul id="industry_key" data-id="1" style="padding-right: 100px;">
-                    <li class="fl" v-bind:class="{'on':isAllCat}">
+                    <li class="fl" v-bind:class="{'on':isCat('')}">
                         <a v-bind:href="getLocationUrl('')">全部</a>
                     </li>
-                    <li class="fl on" v-for="cat in categories" v-if="isCat(cat)">
-                        <a v-bind:href="getLocationUrl(cat)" v-html="cat.name"></a>
-                    </li>
-                    <li class="fl" v-else="">
+                    <li class="fl" v-for="cat in categories" v-bind:class="{'on':isCat(cat)}">
                         <a v-bind:href="getLocationUrl(cat)" v-html="cat.name"></a>
                     </li>
                 </ul>
                 <!--<p class="yang-class-p1">
                     <a class="yang-class-a1" style="float: right; display: block;">更多</a>
                 </p>-->
+            </div>
+            <div class="yang-class">
+                <strong>格式：</strong>
+                <ul id="cate_size" style="padding-right: 100px;">
+                    <li class=" fl" v-bind:class="getPatternClass('')">
+                        <i></i>
+                        <a v-bind:href="getPatternUrl('')">全部</a>
+                    </li>
+                    <li class="fl" v-for="pattern in patterns" v-bind:class="getPatternClass(pattern)">
+                        <i></i>
+                        <a v-bind:href="getPatternUrl(pattern.id)" v-html="pattern.name"></a>
+                    </li>
+                </ul>
             </div>
             <div class="classify-nav" style="height:46px;line-height: 46px;width:100%;background-color: #fff;">
                 <div class="fl">
@@ -627,7 +653,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="min-height:400px;">
         <div class="col-md-3" v-for="im in images">
             <div class="tupian-border">
                 <div class="tupian-back">
@@ -733,6 +759,8 @@
 <script src="/js/front/application.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    window.patterns = /*[[${patterns}]]*/ null
+    window.pattern = /*[[${pattern}]]*/ null
     window.categories = /*[[${categories}]]*/ null
     window.images = /*[[${images}]]*/ null
     window.params = /*[[${params}]]*/ null
@@ -752,6 +780,8 @@
     var app = new Vue({
         el: "#app",
         data: {
+            pattern: pattern,
+            patterns: patterns,
             params: params,
             category: category,
             categories1: category ? category.split('>') : [],
@@ -767,6 +797,53 @@
             imageId: null
         },
         methods: {
+            getPatternUrl: function (pa) {
+                var href = window.location.href
+                href = decodeURI(href)
+                var url = href.substring(0, href.indexOf("/list") + 5) + "?"
+                var urlParams = href.substring(href.indexOf("/list") + 6)
+                if (urlParams.indexOf("?") != -1) {
+                    urlParams = urlParams.substring(1)
+                }
+                urlParams = urlParams.split("&")
+                if (pa) {
+                    var flag = true
+                    for (key in urlParams) {
+                        if (urlParams[key]) {
+                            if (urlParams[key].indexOf("pattern") != -1) {
+                                url += urlParams[key].split("=")[0] + '=' + pa + '&'
+                                flag = false
+                            } else {
+                                url += urlParams[key] + "&"
+                            }
+                        }
+                    }
+                    if (flag) {
+                        url += 'pattern=' + pa + "&"
+                    }
+                } else {
+                    for (key in urlParams) {
+                        if (urlParams[key].indexOf("pattern") == -1) {
+                            url += urlParams[key] + "&"
+                        }
+                    }
+                }
+                if (url.charAt(url.length - 1) == '&') {
+                    url = url.substring(0, url.length - 1)
+                }
+                return url
+            },
+            getPatternClass: function (pa) {
+                if (!this.pattern) {
+                    if (!pa) {
+                        return 'yang-check on'
+                    }
+                } else {
+                    if (pa.id == this.pattern) {
+                        return 'yang-check on'
+                    }
+                }
+            },
             getImage: function (im) {
                 window.open( '/front/images/'+im.id)
             },
@@ -946,8 +1023,9 @@
                     }
                 } else {
                     for (key in urlParams) {
+                        console.log(urlParams[key].split("=")[1].split(">").length == 3)
                         if (urlParams[key].indexOf("category") != -1 && urlParams[key].split("=")[1] && urlParams[key].split("=")[1].split(">").length == 3) {
-                            url += urlParams[key].substring(0, urlParams[key].lastIndexOf(">"))
+                            url += urlParams[key].substring(0, urlParams[key].lastIndexOf(">")) + "&"
                         } else {
                             url += urlParams[key] + "&"
                         }
@@ -958,19 +1036,17 @@
                 }
                 return url
             },
-            isAllCat: function () {
-                if (this.category) {
-                   /* for (key in this.categories) {
-                        if (this.category.split(">").pop() == this.categories[key].name) {*/
-                            return false
-                    /*    }
-                    }*/
-                }
-                return true
-            },
             isCat: function (cat) {
                 if (this.category) {
                     if (this.category.split(">").pop() == cat.name) {
+                        return true
+                    }
+                    if (!cat) {
+                        for (key in this.categories) {
+                            if (this.category.split(">").pop() == this.categories[key].name) {
+                                return false
+                            }
+                        }
                         return true
                     }
                 }
