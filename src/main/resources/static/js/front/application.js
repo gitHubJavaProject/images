@@ -40,6 +40,9 @@ $(function () {
         if(!$(e.target).is('#exampleInputAmount') && !$(e.target).is('.table-tr')){
             searchBlur()
         }
+        if(!$(e.target).is('#getHeaderCategories') && !$(e.target).is('#viewHeaderCatsDivId')){
+            outHeaderCategories()
+        }
     })
 })
 
@@ -82,4 +85,57 @@ var loginModal = new Vue({
 
 function regist() {
     window.location.href = '/front/register?' + window.location.href
+}
+
+var getHeaderCategories = new Vue({
+    el: '#getHeaderCategories',
+    data: {
+        categories: [],
+        filterCatsByLastLevel: []
+    },
+    computed: {
+        filterCats: function () {
+            var filter = []
+            for (key in this.categories) {
+                if (this.categories[key].level == 1) {
+                    filter.push(this.categories[key])
+                }
+            }
+            return filter
+        }
+    },
+    methods:{
+        getCategoriesByLaseLevel: function (cat) {
+            var self = this
+            var filter = []
+            self.filterCatsByLastLevel = []
+            for (key in self.categories) {
+                if (self.categories[key].parent == cat.id) {
+                    filter = []
+                    for (key1 in self.categories) {
+                        if (self.categories[key1].parent == self.categories[key].id) {
+                            filter.push(self.categories[key1])
+                        }
+                    }
+                    self.categories[key].sub = filter
+                    self.filterCatsByLastLevel.push(self.categories[key])
+                }
+            }
+        }
+    },
+    mounted: function () {
+        var self = this
+        $.get('/front/categories', function (result) {
+            //console.log(result)
+            self.categories = result
+        })
+    }
+})
+
+function viewHeaderCategories() {
+    $("#getHeaderCategories").css("display", "block");
+}
+
+function outHeaderCategories() {
+    $("#getHeaderCategories").css("display", "none");
 }

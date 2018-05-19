@@ -54,7 +54,7 @@
 }
 
 .form-header .form-group .input-group-addon {
-  width: 47px;
+  width: 80px;
 }
 
 .form-header .input-group-addon {
@@ -95,6 +95,34 @@
   border-bottom:1px solid #888;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+
+.view-categories {
+  display: none;
+  position: relative;
+  left:0px;
+  top:-4px;
+  z-index: 111;
+  width:100px;
+  height:auto;
+  background-color: #fff;
+  border-left:1px solid #888;
+  border-right:1px solid #888;
+  border-bottom:1px solid #888;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.view-categories li:hover {
+  background-color: #afa;
+}
+
+.view-categories li .cats {
+  display: none;
+}
+
+.view-categories li:hover .cats {
+  display: block;
 }
 
 @media (max-width: 1300px) {

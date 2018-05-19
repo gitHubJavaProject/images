@@ -14,15 +14,18 @@
                     Amount (in dollars)
                 </label>
                 <div class="input-group">
-                    <!--<div class="input-group-addon">
+                    <div class="input-group-addon">
+                        <span class="icon-bar" style="margin-top:0px;"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </div>-->
+                        <span style="position:absolute;top:10px;left:40px;">分类</span>
+                        <div style="position: absolute;top:0px;left:0px;opacity: 0;z-index: 1111;width:80px;height:34px;"
+                             onclick="viewHeaderCategories()" id="viewHeaderCatsDivId"></div>
+                    </div>
                     <input onfocus="searchFocus();" onkeyup="searchFocus()" type="text" class="form-control"
                            autocomplete="off" id="exampleInputAmount" placeholder="9999999素材任意下载"/>
-                    <div class="input-group-addon input-group-button">
-                        <a class="btn-search" onclick="headerSelectSubmit()">搜索</a>
+                    <div class="input-group-addon input-group-button" onclick="headerSelectSubmit()">
+                        <a class="btn-search">搜索</a>
                     </div>
                 </div>
                 <div class="search-result">
@@ -31,9 +34,24 @@
                         </tbody>
                     </table>
                 </div>
-              <!--  <div class="view-categories">
-
-                </div>-->
+                <div id="getHeaderCategories" class="view-categories">
+                    <ul>
+                        <li v-for="cat in filterCats" style="padding-left: 15px;padding-right: 5px;position: relative;"
+                            v-on:mouseover="getCategoriesByLaseLevel(cat)">
+                            <a v-html="cat.name" style="text-underline: none; cursor: pointer;" v-bind:href="'/front/list?category='+cat.name"></a>
+                            <span class="glyphicon glyphicon-triangle-right" style="position: absolute;right: 5px;top: 15px;"></span>
+                            <div class="cats" style="position: absolute;left:98px;top:-1px;width:317px;
+                                   height:auto;background-color: #fff;border:1px solid #fafafa;">
+                                <div v-for="ca in filterCatsByLastLevel" style="padding-left: 15px;padding-right: 15px;">
+                                    <a v-html="ca.name+'/'" style="text-underline: none; cursor: pointer;font-weight: 700;"
+                                        v-bind:href="'/front/list?category='+cat.name+'>'+ca.name"></a>
+                                    <a v-for="s in ca.sub" v-html="s.name+' |'" style="padding-left:10px;text-underline: none; cursor: pointer;"
+                                        v-bind:href="'/front/list?category='+cat.name+'>'+ca.name+'>'+s.name"></a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </form>
         <div th:if="${loginUser == null}" class="navbar-right">
