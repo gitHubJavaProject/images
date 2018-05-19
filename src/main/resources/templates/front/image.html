@@ -288,7 +288,7 @@
 
         .w1200 {
             width: 1200px;
-            margin: 50px auto;
+            margin: 50px auto 10px auto;
         }
 
         .detail-container .bread-crumbs {
@@ -782,8 +782,14 @@
                     </p>
                 </div>
                 <div style="text-align: center;margin-top: 10px;">
-                    <button class="btn btn-primary-myself" v-on:click="downLoadImage()">免费下载</button>
-                    <button class="btn btn-default-myself" v-on:click="favImage(image)">收藏</button>
+                    <button class="btn btn-primary-myself" v-on:click="downLoadImage()">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                        免费下载
+                    </button>
+                    <button class="btn btn-default-myself" v-on:click="favImage(image)">
+                        <span class="glyphicon glyphicon-star-empty"></span>
+                        收藏
+                    </button>
                 </div>
                 <div class="clearfix img-info" style="margin-top:25px;">
                     <p class="fl" style="width:120px;text-align: center">
@@ -823,8 +829,8 @@
         <h5>您可能在找这些：</h5>
     </div>
 </div>
-    <div class="row">
-        <div class="col-md-3" v-for="im in images" style="margin-bottom: 15px;">
+    <div class="row" style="padding:0px 8px 0px 8px;">
+        <div class="col-md-3" v-for="im in images" style="margin-bottom: 16px;padding-left: 8px;padding-right: 8px;">
             <div class="tupian-border">
                 <div class="tupian-back">
                     <a target="_blank" v-bind:href="'/front/image/getPage/'+im.id">
