@@ -23,8 +23,7 @@
         }
 
         .row {
-            margin: 0px auto;
-            padding: 20px 30px;
+            margin-bottom: 20px;
         }
 
         .tupian-border {
@@ -557,9 +556,9 @@
 </head>
 <body>
 <head th:replace="_shared/front/header :: header"></head>
-<div id="app" class="container-fluid">
+<div id="app" class="container">
     <div class="row">
-        <div class="col-md-12 result-wrapper">
+        <div class="col-md-12 result-wrapper" style="padding-left: 8px;padding-right: 8px;">
             <div class="bread-crumbs" style="margin-left: 11px;">
                 当前位置 :
                 <span v-for="cat in categories1">
@@ -653,7 +652,7 @@
             </div>
         </div>
     </div>
-    <div class="row" style="min-height:400px;padding:0px 37px">
+    <div class="row" style="min-height:400px;">
         <div class="col-md-3" v-for="im in images" style="margin-bottom: 16px;padding-left: 8px;padding-right: 8px;">
             <div class="tupian-border">
                 <div class="tupian-back">
