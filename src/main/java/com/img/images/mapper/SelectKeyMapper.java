@@ -13,4 +13,6 @@ public interface SelectKeyMapper extends BaseMapper<SelectKey> {
     List<SelectKey> find(@Param("param") String param);
 
     SelectKey getByKey(String key);
+
+    List<SelectKey> findAll();
 }

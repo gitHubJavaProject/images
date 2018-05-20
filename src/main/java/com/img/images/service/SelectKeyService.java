@@ -32,4 +32,8 @@ public class SelectKeyService {
             }
         }
     }
+
+    public List<SelectKey> findAll() {
+        return selectKeyMapper.findAll();
+    }
 }

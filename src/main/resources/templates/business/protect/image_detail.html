@@ -499,7 +499,7 @@
                     this.addKeys.shift()
                 }
             }
-            $.get('/front/selectKey', 'param=', function (result) {
+            $.get('/front/selectKeys', function (result) {
                 app.allKeys = result.keys
             })
         }

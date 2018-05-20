@@ -67,6 +67,11 @@ public class IndexController extends BaseController {
         return R.ok(200, "success").put("keys", selectKeyService.find(param));
     }
 
+    @RequestMapping("selectKeys")
+    public R sKeys() {
+        return R.ok(200, "success").put("keys", selectKeyService.findAll());
+    }
+
     @RequestMapping("list")
     public ModelAndView list(ModelAndView mv,
                              @RequestParam(value = "params", required = false) String params,

@@ -20,6 +20,13 @@
       limit 10
     </select>
 
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT
+        s.id, s.key
+        FROM
+        select_key s
+    </select>
+
     <select id="getByKey" resultMap="BaseResultMap">
         SELECT
         s.id,s.key,s.select_number
