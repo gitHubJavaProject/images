@@ -28,7 +28,11 @@ function selecTable(ths) {
 }
 
 function headerSelectSubmit() {
-    window.location.href = '/front/list?params='+encodeURIComponent($("#exampleInputAmount").val())
+    $.get('/front/selectKeys/add', 'key='+$("#exampleInputAmount").val(), function (result) {
+        if (result) {
+            window.location.href = '/front/list?params=' + encodeURIComponent($("#exampleInputAmount").val())
+        }
+    })
 }
 
 function searchBlur() {

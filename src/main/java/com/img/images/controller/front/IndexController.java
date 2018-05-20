@@ -44,6 +44,12 @@ public class IndexController extends BaseController {
     @Autowired
     private PatternService patternService;
 
+    @GetMapping("selectKeys/add")
+    public Object selectKeysAdd(String key) {
+        selectKeyService.update(key);
+        return true;
+    }
+
     @RequestMapping("index")
     public ModelAndView index(ModelAndView mv) {
         mv.setViewName("front/index");

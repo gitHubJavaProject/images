@@ -2,8 +2,11 @@ package com.img.images.service;
 
 import com.img.images.mapper.CategoryMapper;
 import com.img.images.mapper.ImageMapper;
+import com.img.images.mapper.SelectKeyMapper;
 import com.img.images.model.Category;
 import com.img.images.model.Image;
+import com.img.images.model.SelectKey;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,9 @@ public class ImageService {
 
     @Autowired
     private ImageMapper imageMapper;
+
+    @Autowired
+    private SelectKeyMapper selectKeyMapper;
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -47,12 +53,26 @@ public class ImageService {
         String typeStr = getStr(image);
         image.setTypeStr(typeStr);
         image.setDownloadNumber(0L);
+        updateKeys(image);
         imageMapper.save(image);
+    }
+
+    private void updateKeys(Image image) {
+        String[] keys = image.getKeys().split("#");
+        for (String key : keys) {
+           if (StringUtils.isNotBlank(key) && null == selectKeyMapper.getByKey(key)) {
+               SelectKey selectKey = new SelectKey();
+               selectKey.setKey(key);
+               selectKey.setSelectNumber(0L);
+               selectKeyMapper.save(selectKey);
+           }
+        }
     }
 
     public void update(Image image) {
         String typeStr = getStr(image);
         image.setTypeStr(typeStr);
+        updateKeys(image);
         imageMapper.update(image);
     }
 

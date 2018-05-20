@@ -20,5 +20,35 @@
       limit 10
     </select>
 
+    <select id="getByKey" resultMap="BaseResultMap">
+        SELECT
+        s.id,s.key,s.select_number
+        FROM
+        select_key s
+        where s.key=#{key}
+    </select>
 
+    <insert id="save" parameterType="com.img.images.model.SelectKey" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        select_key
+        (
+        `key`,
+        `create_date`,
+        `select_number`
+        )
+        VALUES
+        (
+        #{key},
+        now(),
+        #{selectNumber}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.img.images.model.SelectKey">
+        UPDATE
+        select_key
+        SET
+        `select_number`=#{selectNumber}
+        where id=#{id}
+    </update>
 </mapper>
