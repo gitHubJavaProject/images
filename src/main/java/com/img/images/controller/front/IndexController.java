@@ -47,9 +47,9 @@ public class IndexController extends BaseController {
     @RequestMapping("index")
     public ModelAndView index(ModelAndView mv) {
         mv.setViewName("front/index");
-        List<Image> images = imageService.list(1, 4, null, null, null, 3, null);
+        List<Image> images = imageService.list(1, 8, null, null, null, 3, null);
         mv.addObject("imagesFav", convert(images));
-        List<Image> images2 = imageService.list(1, 4, null, null, null, 2, null);
+        List<Image> images2 = imageService.list(1, 8, null, null, null, 2, null);
         mv.addObject("imagesDown", convert(images2));
         List<Image> images1 = imageService.list(1, 4, null, null, null, 1, null);
         mv.addObject("imagesNew", convert(images1));
