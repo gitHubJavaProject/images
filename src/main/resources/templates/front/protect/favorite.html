@@ -459,12 +459,13 @@
 
         </div>
     </div>
-    <div style="margin:10px 0px;font-size: 18px;">
+    <div class="container">
+    <div style="margin:10px -8px;font-size: 18px;">
         <span class="glyphicon glyphicon-picture"></span>&nbsp;
         <span class="w1200 fav-num" th:text="${#lists.size(images)+'个作品'}"></span>
     </div>
     <div class="row">
-        <div class="col-md-3" v-for="im in images">
+        <div class="col-md-3" v-for="im in images" style="padding-left: 8px;padding-right: 8px;margin-bottom: 16px;">
             <div class="tupian-border">
                 <div class="tupian-back">
                     <a href="#" style="width:100%; height:100%;">
@@ -497,7 +498,7 @@
             </div>
         </div>
     </div>
-
+    </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="favModalId">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
