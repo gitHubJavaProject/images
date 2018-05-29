@@ -32,4 +32,6 @@ public interface ImageMapper extends BaseMapper<Image>{
     List<Image> getByTypeStr(String typeStr);
 
     List<Image> findByKeys(@Param("key") String  key, @Param("id") Long id);
+
+    String getPattern(Integer id);
 }

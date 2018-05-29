@@ -195,4 +195,12 @@
         where 1=1 and id !=#{id}
         <if test="key != null and key != ''">and `keys` like "%"#{key}"%"</if>
     </select>
+
+    <select id="getPattern" resultType="java.lang.String">
+      SELECT
+      `name`
+      FROM
+      `pattern`
+      where id=#{id}
+    </select>
 </mapper>

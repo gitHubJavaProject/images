@@ -76,6 +76,7 @@ public class ImagesController {
         map.put("favCount", imageFavoriteService.getFavCount(image.getId()));
         map.put("user", userService.getById(image.getUserId()));
         map.put("createDate", image.getCreateDate());
+        map.put("pattern", imageService.getPattern(image.getPattern()));
         return map;
     }
 }

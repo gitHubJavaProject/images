@@ -129,4 +129,8 @@ public class ImageService {
         List<Image> list1 =  new ArrayList<>(set);
         return list1.size()>8? list1.subList(0,8): list1;
     }
+
+    public String getPattern(Integer id) {
+        return imageMapper.getPattern(id);
+    }
 }
