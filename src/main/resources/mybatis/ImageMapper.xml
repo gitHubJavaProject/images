@@ -77,7 +77,7 @@
       #{userId},
       #{downloadNumber},
       #{collectionNumber},
-      1,
+      #{status},
       #{pattern}
       )
     </insert>

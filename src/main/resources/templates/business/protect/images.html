@@ -67,7 +67,7 @@
                             <img th:src="@{'/file/show?path='+${image.showImage}}" width="28px" height="32px"/>
                         </a>
                     </td>
-                    <td th:text="${image.userId}"></td>
+                    <td th:text="${image.userName}"></td>
                     <td th:text="${image.downloadNumber}"></td>
                     <td th:text="${image.status==1?'草稿':image.status==2?'待审核':image.status==3?'审核通过'
                     :image.status==4?'审核未通过':'退回修改'}"></td>

@@ -5,6 +5,7 @@ import com.img.images.model.Image;
 import com.img.images.model.PatternService;
 import com.img.images.service.CategoryService;
 import com.img.images.service.ImageService;
+import com.img.images.service.UserService;
 import com.img.images.util.R;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +36,9 @@ public class ImageController extends BaseController{
     @Autowired
     private PatternService patternService;
 
+    @Autowired
+    private UserService userService;
+
     @Value("${upload.file.root}")
     private String uploadFileRoot;
 
@@ -51,8 +55,25 @@ public class ImageController extends BaseController{
         mv.addObject("name", null == name ? "" : name);
         mv.addObject("page", page);
         mv.addObject("size", size);
-        mv.addObject("images", imageService.search(page, size, name, null));
+        mv.addObject("images", convert(imageService.search(page, size, name, null)));
         return mv;
+    }
+
+    private List<Map<String, Object>> convert(List<Image> images) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Image image : images) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", image.getId());
+            map.put("name", image.getName());
+            map.put("typeStr", image.getTypeStr());
+            map.put("showImage", image.getShowImage());
+            map.put("downloadNumber", image.getDownloadNumber());
+            map.put("status", image.getStatus());
+            map.put("userName", userService.getById(image.getUserId()).getUserName());
+            map.put("fileUrl", image.getFileUrl());
+            list.add(map);
+        }
+        return list;
     }
 
     @RequestMapping("_")
@@ -81,6 +102,7 @@ public class ImageController extends BaseController{
                 return R.error(400, "参数不正确！").put("icon", "warning");
             }
             image.setUserId(getLoginUser().getId());
+            image.setStatus(3);
             imageService.save(image);
             return R.ok(201, "保存成功！").put("icon", "success").put("image", image);
         } catch (Exception e) {

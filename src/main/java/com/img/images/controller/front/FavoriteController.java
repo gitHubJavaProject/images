@@ -32,7 +32,7 @@ public class FavoriteController extends BaseController{
     @DeleteMapping("{id}")
     public R delete(@PathVariable("id") Long id) {
         favoriteService.delete(id);
-        return R.ok(204, "").put("icon", "success");
+        return R.ok(204, "删除成功").put("icon", "success");
     }
 
     @RequestMapping("")

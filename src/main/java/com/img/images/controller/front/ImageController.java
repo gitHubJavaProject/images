@@ -59,6 +59,7 @@ public class ImageController extends BaseController{
                 return R.error(403, "请先登录！").put("icon", "warning");
             }
             image.setUserId(getLoginUser().getId());
+            image.setStatus(1);
             imageService.save(image);
             return R.ok(201, "保存成功！").put("icon", "success").put("image", image);
         } catch (Exception e) {
