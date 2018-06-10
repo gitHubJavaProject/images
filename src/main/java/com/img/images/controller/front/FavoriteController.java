@@ -29,6 +29,12 @@ public class FavoriteController extends BaseController{
     @Autowired
     private ImageService imageService;
 
+    @DeleteMapping("{id}")
+    public R delete(@PathVariable("id") Long id) {
+        favoriteService.delete(id);
+        return R.ok(204, "").put("icon", "success");
+    }
+
     @RequestMapping("")
     public Object list(Integer page, Integer size) {
         Map<String, Object> map = new HashMap<>();

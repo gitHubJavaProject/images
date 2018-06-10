@@ -114,4 +114,9 @@
         on imf.favorite_id=f.id
         where f.user_id=#{id}
     </select>
+
+    <delete id="delete">
+        delete from favorite
+        where id=#{id}
+    </delete>
 </mapper>

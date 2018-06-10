@@ -16,6 +16,10 @@ public class FavoriteService {
     @Autowired
     private FavoriteMapper favoriteMapper;
 
+    public void delete(Long id) {
+        favoriteMapper.delete(id);
+    }
+
     public List<FavAndCountImg> findAll(Long userId) {
         return favoriteMapper.findFavAndCountImgByUserId(userId);
     }
